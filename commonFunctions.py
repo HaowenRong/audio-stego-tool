@@ -25,36 +25,37 @@ def readAudio(filePath):
 
   return data, channels, samplerate
 
+def viewAudio(filePath, frameRange=(0, 100)):
+  data, channels, samplerate = readAudio(filePath)
+
+  startFrame, endFrame = frameRange
+  print(data[startFrame:endFrame])
+
 def compareAudio(audioPath1, audioPath2):
   readAudio(audioPath1)
   readAudio(audioPath2)
 
 def modifyFrame(frameValue, display=False):
-  frameFloat = np.float32(frameValue)
-  frameInt   = frameFloat.view(np.int32)
-
-  frameFlipped = frameInt ^ 1
-
-  frameFinal = frameFlipped.view(np.float32)
-
   if display:
     print('Modifying Frame________')
-    print('Original Float :', frameFloat)
-    print('   Final Float :', frameFinal)
-    print('Original bits :', bin(frameInt))
-    print(' Flipped bits :', bin(frameFlipped))
+    print('Original Float :', frameValue)
+    print('Original bits  :', bin(frameValue))
 
-  return frameFinal
+  frameValue |= 1
+
+  if display:
+    print('Original Float :', frameValue)
+    print('Original bits  :', bin(frameValue))
+
+  return frameValue
 
 def extractFromFrame(frameValue, display=False):
-  frameFloat = np.float32(frameValue)
-  frameInt   = frameFloat.view(np.int32)
-  frameLSB   = frameInt & 1
+  frameLSB   = frameValue & 1
   
   if display:
     print('Extracting From Frame________')
-    print('Frame value  :', frameFloat)
-    print('Frame Binary :', bin(frameInt))
+    print('Frame value  :', frameValue)
+    print('Frame Binary :', bin(frameValue))
     print('Frame LSB    :', frameLSB)
   
   return str(frameLSB)

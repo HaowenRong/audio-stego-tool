@@ -26,11 +26,4 @@ def encodeMessage(filePath, stegoText, outputPath):
 
   data, channels, samplerate = readAudio('outy.flac')
 
-  for i in range(0, 100):
-    frame = data[i][0]
-    print(frame)
-
-
-encodeMessage('input.flac', 'test', 'outy.flac')
-
-
+  viewAudio('outy.flac')

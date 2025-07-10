@@ -25,6 +25,5 @@ def decodeMessage(filePath, stegoText):
     stegoText += lsb
   
   print(stegoText)
+  print(bitsToText(stegoText))
 
-
-decodeMessage('outy.flac', 'test')
