@@ -3,17 +3,25 @@ import soundfile as sf
 from commonFunctions import *
 from mutagen import File
 
-def encodeMessage(inputPath, stegoText, coverPath):
+def encodeMessage(inputPath, stegoText, coverPath,
+                  startingFrame=0, channels=1, lsbDepth=0):
   print('\n\n____Encoding________________')
 
   # read audio file
-  data, channels, samplerate = readAudio(inputPath, display=False)
+  data, totalChannels, samplerate = readAudio(inputPath, display=False)
 
   stegoBits = textToBits(stegoText)
 
-  for i, char in enumerate(stegoBits):
-    channel = 0
-    frame = data[i][channel]
+  # make sure selected number of channels does not exceed total channels
+  if channels > totalChannels:
+    print(f'Selected channels ({channels}) exceeds total channels of selected audio file ({totalChannels}).')
+    print(f'Setting channels to audios total. {channels} > {totalChannels}')
+    channels = totalChannels
+
+  for i, char in enumerate(stegoBits, start=startingFrame):
+    # select channel to use based on selected number of channels
+    channel = i % channels
+    frame   = data[i][channel]
 
     if char == extractFromFrame(frame):
       continue
