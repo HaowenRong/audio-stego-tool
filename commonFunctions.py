@@ -38,7 +38,7 @@ def compareAudio(audioPath1, audioPath2):
 
 def modifyFrame(frameValue, display=False):
   if display:
-    print('Modifying Frame________')
+    print('\n____Modifying Frame________')
     print('Original Float :', frameValue)
     print('Original bits  :', bin(frameValue))
 
@@ -47,6 +47,7 @@ def modifyFrame(frameValue, display=False):
   if display:
     print('Original Float :', frameValue)
     print('Original bits  :', bin(frameValue))
+    print('------------------------------')
 
   return frameValue
 
@@ -54,9 +55,10 @@ def extractFromFrame(frameValue, display=False):
   frameLSB = frameValue & 1
   
   if display:
-    print('Extracting From Frame________')
+    print('\n____Extracting From Frame________')
     print('Frame value  :', frameValue)
     print('Frame Binary :', bin(frameValue))
     print('Frame LSB    :', frameLSB)
+    print('------------------------------')
   
   return str(frameLSB)

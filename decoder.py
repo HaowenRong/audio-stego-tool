@@ -2,11 +2,11 @@ import numpy     as np
 import soundfile as sf
 from commonFunctions import *
 
-def decodeMessage(filePath, messageLength):
-  print('Decoding')
+def decodeMessage(coverPath, messageLength):
+  print('\n\n____Decoding________________')
 
   # read audio file
-  data, channels, samplerate = readAudio(filePath)
+  data, channels, samplerate = readAudio(coverPath)
 
   bitsInChar = 8
   messageLength = messageLength * bitsInChar
@@ -18,3 +18,5 @@ def decodeMessage(filePath, messageLength):
   
   print(stegoBits)
   print(bitsToText(stegoBits))
+
+  print('------------------------------')
