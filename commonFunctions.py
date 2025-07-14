@@ -1,4 +1,4 @@
-import numpy as np
+import numpy     as np
 import soundfile as sf
 
 
@@ -10,18 +10,19 @@ def bitsToText(bits):
   return ''.join(chr(int(char, 2)) for char in chars)
 
 
-def readAudio(filePath):
+def readAudio(filePath, display=True):
   data, samplerate = sf.read(filePath, dtype='int16')
   channels = len(data.shape)
   seconds  = data.shape[0] / samplerate
   minutes  = seconds       / 60
 
-  print('\n' + filePath)
-  print('Shape      :', data.shape)
-  print('Samplerate :', samplerate)
-  print('Seconds    :', seconds)
-  print('Minutes    :', minutes)
-  print('Channels   :', channels)
+  if display == True:
+    print('\n' + filePath)
+    print('Shape      :', data.shape)
+    print('Samplerate :', samplerate)
+    print('Seconds    :', seconds)
+    print('Minutes    :', minutes)
+    print('Channels   :', channels)
 
   return data, channels, samplerate
 
@@ -50,7 +51,7 @@ def modifyFrame(frameValue, display=False):
   return frameValue
 
 def extractFromFrame(frameValue, display=False):
-  frameLSB   = frameValue & 1
+  frameLSB = frameValue & 1
   
   if display:
     print('Extracting From Frame________')

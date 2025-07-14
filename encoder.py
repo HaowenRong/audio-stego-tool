@@ -2,13 +2,11 @@ import numpy     as np
 import soundfile as sf
 from commonFunctions import *
 
-np.set_printoptions(threshold=1000)
-
 def encodeMessage(filePath, stegoText, outputPath):
   print('Encoding')
 
   # read audio file
-  data, channels, samplerate = readAudio(filePath)
+  data, channels, samplerate = readAudio(filePath, display=False)
 
   stegoBits = textToBits(stegoText)
 
@@ -19,11 +17,7 @@ def encodeMessage(filePath, stegoText, outputPath):
     if char == extractFromFrame(frame):
       continue
 
-    data[i][channel] = modifyFrame(frame, display=True)
+    data[i][channel] = modifyFrame(frame, display=False)
 
   sf.write(outputPath, data, samplerate)
   compareAudio(filePath, outputPath)
-
-  data, channels, samplerate = readAudio('outy.flac')
-
-  viewAudio('outy.flac')

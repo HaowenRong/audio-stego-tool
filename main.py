@@ -2,21 +2,21 @@ import sys
 from encoder import *
 from decoder import *
 
-args = sys.argv
+np.set_printoptions(threshold=1000)
 
-print(len(args))
-if len(args) != 5:
+args    = sys.argv
+numArgs = len(args)
+
+option   = args[1]
+filePath = args[2]
+
+if option == 'encode' and numArgs == 5:
+  stegoText  = args[3]
+  outputPath = args[4]
+  encodeMessage(filePath, stegoText, outputPath)
+elif option == 'decode' and numArgs == 4:
+  messageLength = args[3]
+  decodeMessage(filePath, int(messageLength))
+else:
   print('Invalid args')
   sys.exit()
-
-option     = args[1]
-filePath   = args[2]
-stegoText  = args[3]
-outputPath = args[4]
-
-if option == 'encode':
-  encodeMessage(filePath, stegoText, outputPath)
-elif option == 'decode':
-  decodeMessage(filePath, stegoText)
-else:
-  print('Invalid option')
