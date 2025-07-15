@@ -1,5 +1,6 @@
 import numpy     as np
 import soundfile as sf
+from mutagen import File
 
 
 def textToBits(stegoText):
@@ -62,3 +63,53 @@ def extractFromFrame(frameValue, display=False):
     print('------------------------------')
   
   return str(frameLSB)
+
+def checkSelectedChannels(channels, totalChannels):
+    # make sure selected number of channels does not exceed total channels
+  if channels > totalChannels:
+    print(f'Selected channels ({channels}) exceeds total channels of selected audio file ({totalChannels}).')
+    print(f'Setting channels to audios total. {channels} > {totalChannels}')
+    channels = totalChannels
+  
+  return channels
+
+def checkStartingFrame(frame, totalFrames):
+  print(frame, totalFrames)
+
+  if frame >= totalFrames:
+    print(f'Selected starting frame ({frame}) exceeds total frames of selected audio file ({totalFrames}).')
+    print(f'Setting starting frame to 0. {frame} > {0}')
+    frame = totalFrames
+  
+  return frame
+
+
+def copyMetadata(inputPath, coverPath, display=False):
+  sourceFile = File(inputPath)
+  coverFile  = File(coverPath)
+
+  # clear cover file metadata
+  coverFile.clear()
+  coverFile.clear_pictures()
+
+  # copy tags
+  for tag in sourceFile.tags.keys():
+    coverFile[tag] = sourceFile[tag]
+  
+  # copy cover images
+  for picture in sourceFile.pictures:
+    coverFile.add_picture(picture)
+
+  # save changes
+  coverFile.save()
+  
+  if display == True:
+    print('\n____Copying metadata________')
+    print(f'{inputPath}  >  {coverPath}')
+    print('\nTags----')
+    print('Original :', sourceFile.tags.keys())
+    print('Cover    :', coverFile.tags.keys())
+    print('\nPictures----')
+    print('Original :', sourceFile.pictures)
+    print('Cover    :', coverFile.pictures)
+    print('------------------------------')
