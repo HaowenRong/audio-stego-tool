@@ -21,7 +21,7 @@ def encodeMessage(inputPath, stegoText, coverPath,
     if char == extractFromFrame(frame):
       continue
 
-    data[i][channel] = modifyFrame(frame, display=False)
+    data[i][channel] = modifyFrame(frame, display=True)
 
   # write to cover file
   sf.write(coverPath, data, samplerate)

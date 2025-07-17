@@ -1,5 +1,6 @@
 import numpy     as np
 import soundfile as sf
+import os
 from mutagen import File
 
 
@@ -9,6 +10,15 @@ def textToBits(stegoText):
 def bitsToText(bits):
   chars = [bits[i:i+8] for i in range(0, len(bits), 8)]
   return ''.join(chr(int(char, 2)) for char in chars)
+
+def getStegoText(filePath):
+  with open(filePath, 'r', encoding='utf-8') as file:
+    return file.read()
+
+def saveStegoText(outputPath, extractedText):
+  with open(outputPath, "w", encoding="utf-8") as file:
+    file.write(extractedText)
+
 
 
 def readAudio(filePath, display=True):
