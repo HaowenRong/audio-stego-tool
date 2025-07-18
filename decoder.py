@@ -3,7 +3,7 @@ import soundfile as sf
 from commonFunctions import *
 
 def decodeMessage(coverPath, messageLength,
-                  output=None,
+                  outputPath=None,
                   startingFrame=0, channels=1):
   print('\n\n____Decoding________________')
 
@@ -32,5 +32,5 @@ def decodeMessage(coverPath, messageLength,
   print('------------------------------')
 
   # save to file
-  if output != None:
-    saveStegoText(output, stegoText)
+  if outputPath != None:
+    saveStegoText(outputPath, stegoText)

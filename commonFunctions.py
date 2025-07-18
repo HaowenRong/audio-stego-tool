@@ -4,12 +4,26 @@ import os
 from mutagen import File
 
 
-def textToBits(stegoText):
-  return ''.join(format(ord(char), '08b') for char in stegoText)
+def textToBits(stegoText, display=False):
+  bits = ''.join(format(ord(char), '08b') for char in stegoText)
 
-def bitsToText(bits):
+  if display == True:
+    print('\n____Converting text to bits________')
+    print('Text ----------------\n', frameValue)
+    print('Bits ----------------\n', bin(frameValue))
+
+  return bits
+
+def bitsToText(bits, display=False):
   chars = [bits[i:i+8] for i in range(0, len(bits), 8)]
-  return ''.join(chr(int(char, 2)) for char in chars)
+  text  = ''.join(chr(int(char, 2)) for char in chars)
+
+  if display == True:
+    print('\n____Converting bits to text________')
+    print('Bits ----------------\n', bits)
+    print('Text ----------------\n', text)
+
+  return text
 
 def getStegoText(filePath):
   with open(filePath, 'r', encoding='utf-8') as file:
@@ -23,19 +37,21 @@ def saveStegoText(outputPath, extractedText):
 
 def readAudio(filePath, display=True):
   data, samplerate = sf.read(filePath, dtype='int16')
-  channels = len(data.shape)
-  seconds  = data.shape[0] / samplerate
-  minutes  = seconds       / 60
+
+  info = sf.info(filePath)
+  print(info)
 
   if display == True:
     print('\n' + filePath)
+    print('Format     :', info.format)
     print('Shape      :', data.shape)
-    print('Samplerate :', samplerate)
-    print('Seconds    :', seconds)
-    print('Minutes    :', minutes)
-    print('Channels   :', channels)
+    print('Frames     :', info.frames)
+    print('Samplerate :', info.samplerate)
+    print('Bit Depth  :', info.subtype)
+    print('duration   :', info._duration_str)
+    print('Channels   :', info.channels)
 
-  return data, channels, samplerate
+  return data, info.channels, info.samplerate
 
 def viewAudio(filePath, frameRange=(0, 100)):
   data, channels, samplerate = readAudio(filePath)
