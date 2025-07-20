@@ -62,6 +62,12 @@ decode.add_argument(
   default=None,
   help='Output the extracted text into a file.'
 )
+decode.add_argument(
+  '--depth', '-d',
+  type=int,
+  default=1,
+  help='not yet implemented'
+)
 
 
 args = argParser.parse_args()
@@ -82,5 +88,6 @@ elif args.selection == 'decode':
     # required params
     args.filePath, args.messageLength,
     # optional params
-    output=args.output, startingFrame=args.startFrame, channels=args.channels
+    outputPath=args.output, startingFrame=args.startFrame, channels=args.channels,
+    lsbDepth=args.depth
     )

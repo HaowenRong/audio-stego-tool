@@ -4,7 +4,7 @@ from commonFunctions import *
 
 def decodeMessage(coverPath, messageLength,
                   outputPath=None,
-                  startingFrame=0, channels=1):
+                  startingFrame=0, channels=1, lsbDepth=1):
   print('\n\n____Decoding________________')
 
   # read audio file
@@ -17,12 +17,14 @@ def decodeMessage(coverPath, messageLength,
 
   channels      = checkSelectedChannels(channels, totalChannels)
   startingFrame = checkStartingFrame(startingFrame, totalFrames)
+  endingFrame   = startingFrame + messageLength
 
   stegoBits = ''
-  for frame in range(startingFrame, messageLength):
+  for frame in range(startingFrame, endingFrame):
     channel = frame % channels
-    lsb     = extractFromFrame(data[frame][channel])
+    lsb     = extractLSBs(data[frame][channel], lsbDepth, display=True)
     stegoBits += lsb
+    
   
   # convert extracted bits to text and remove null values
   stegoText = bitsToText(stegoBits).replace('\x00', '')
