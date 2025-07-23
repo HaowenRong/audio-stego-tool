@@ -7,39 +7,28 @@ def encodeMessage(inputPath, stegoText, coverPath,
   print('\n\n____Encoding________________')
 
   # read audio file
-  data, totalChannels, samplerate = readAudio(inputPath, display=False)
+  audio = readAudio(inputPath, display=False)
 
   stegoBits = textToBits(stegoText)
-  channels  = checkSelectedChannels(channels, totalChannels)
+  channels  = checkSelectedChannels(channels, audio['channels'])
+  
+  # if using higher bit depths, split bits into chunks
+  if lsbDepth > 1:
+    stegoBits = splitBits(stegoBits, lsbDepth)
 
-  if lsbDepth == 1:
+  for i, segment in enumerate(stegoBits, start=startingFrame):
+    channel = i % channels
+    frame   = audio['data'][i][channel]
 
-    print(stegoBits)
-
-    for i, char in enumerate(stegoBits, start=startingFrame):
-      # select channel to use based on selected number of channels
-      channel = i % channels
-      frame   = data[i][channel]
-
-      if char == extractFromFrame(frame, display=False):
-        continue
-      
-      # data[i][channel] = modifyFrame(frame, display=True)
-
-      data[i][channel] = modifyLSBs(frame, char, 1, display=True)
-  elif lsbDepth > 1:
-    stegoChunks = splitBits(stegoBits, lsbDepth)
-    print(stegoChunks)
-
-    for i, chunk in enumerate(stegoChunks, start=startingFrame):
-      channel = i % channels
-      frame   = data[i][channel]
-      print(frame, chunk, lsbDepth)
-
-      data[i][channel] = modifyLSBs(frame, chunk, lsbDepth, display=True)
+    # skip frame if lsb is already the same
+    if segment == extractLSBs(frame, lsbDepth, display=False):
+      continue
+    
+    # modify bits
+    audio['data'][i][channel] = modifyLSBs(frame, segment, lsbDepth, display=True)
 
   # write to cover file
-  sf.write(coverPath, data, samplerate)
+  sf.write(coverPath, audio['data'], audio['samplerate'])
   
   # copy metadata
   copyMetadata(inputPath, coverPath, display=True)

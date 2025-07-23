@@ -8,23 +8,21 @@ def decodeMessage(coverPath, messageLength,
   print('\n\n____Decoding________________')
 
   # read audio file
-  data, totalChannels, samplerate = readAudio(coverPath)
+  audio = readAudio(coverPath)
 
-  totalFrames   = len(data)
+  messageLength = messageLength * audio['bitDepth']
 
-  bitsInChar    = 8
-  messageLength = messageLength * bitsInChar
-
-  channels      = checkSelectedChannels(channels, totalChannels)
-  startingFrame = checkStartingFrame(startingFrame, totalFrames)
-  endingFrame   = startingFrame + messageLength
+  channels      = checkSelectedChannels(channels, audio['channels'])
+  startingFrame = checkStartingFrame(startingFrame, audio['frames'])
+  endingFrame   = checkEndingFrame(startingFrame + messageLength, audio['frames'])
 
   stegoBits = ''
   for frame in range(startingFrame, endingFrame):
     channel = frame % channels
-    lsb     = extractLSBs(data[frame][channel], lsbDepth, display=True)
+
+    # extract bits
+    lsb = extractLSBs(audio['data'][frame][channel], lsbDepth, display=True)
     stegoBits += lsb
-    
   
   # convert extracted bits to text and remove null values
   stegoText = bitsToText(stegoBits).replace('\x00', '')

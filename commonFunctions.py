@@ -34,12 +34,19 @@ def saveStegoText(outputPath, extractedText):
     file.write(extractedText)
 
 
+bitDepthDict = {
+  'PCM_U8': 8,
+  'PCM_16': 16,
+  'PCM_24': 24,
+  'PCM_32': 32,
+}
 
 def readAudio(filePath, display=True):
   data, samplerate = sf.read(filePath, dtype='int16')
 
   info = sf.info(filePath)
-  print(info)
+
+  bitDepth = bitDepthDict.get(info.subtype, 8)
 
   if display == True:
     print('\n' + filePath)
@@ -51,7 +58,15 @@ def readAudio(filePath, display=True):
     print('duration   :', info._duration_str)
     print('Channels   :', info.channels)
 
-  return data, info.channels, info.samplerate
+  # return data, info.channels, info.samplerate, info.frames
+
+  return {
+    'data': data,
+    'samplerate': samplerate,
+    'channels': info.channels,
+    'frames': info.frames,
+    'bitDepth': bitDepth,
+  }
 
 def viewAudio(filePath, frameRange=(0, 100)):
   data, channels, samplerate = readAudio(filePath)
@@ -153,6 +168,16 @@ def checkStartingFrame(frame, totalFrames):
   if frame >= totalFrames:
     print(f'Selected starting frame ({frame}) exceeds total frames of selected audio file ({totalFrames}).')
     print(f'Setting starting frame to 0. {frame} > {0}')
+    frame = totalFrames
+  
+  return frame
+
+def checkEndingFrame(frame, totalFrames):
+  print(frame, totalFrames)
+
+  if frame >= totalFrames:
+    print(f'Ending frame ({frame}) exceeds total frames of selected audio file ({totalFrames}).')
+    print(f'Setting ending frame to {totalFrames}. {frame} > {totalFrames}')
     frame = totalFrames
   
   return frame
