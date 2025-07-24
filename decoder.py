@@ -1,6 +1,8 @@
 import numpy     as np
 import soundfile as sf
 from commonFunctions import *
+from fileHandling    import *
+from bitManipulation import *
 
 def decodeMessage(coverPath, messageLength,
                   outputPath=None,
@@ -21,7 +23,7 @@ def decodeMessage(coverPath, messageLength,
     channel = frame % channels
 
     # extract bits
-    lsb = extractLSBs(audio['data'][frame][channel], lsbDepth, display=True)
+    lsb = extractLSBs(audio['data'][frame][channel], lsbDepth, display=False)
     stegoBits += lsb
   
   # convert extracted bits to text and remove null values
