@@ -2,6 +2,7 @@ from pathlib import Path
 
 from mutagen      import File
 from mutagen.wave import WAVE
+from mutagen.mp3  import MP3
 from mutagen.id3  import ID3
 
 def copyWavMetadata(inputPath, coverPath):
@@ -36,7 +37,12 @@ def copyFlacMetadata(inputPath, coverPath):
   return coverFile.tags, sourceFile.tags
 
 def copyMp3Metadata(inputPath, coverPath):
-  pass
+  sourceFile = MP3(inputPath)
+  coverFile  = MP3(coverPath)
+
+  coverFile.clear()
+  coverFile.tags = sourceFile.tags
+  coverFile.save()
 
 def copyMetadata(inputPath, coverPath, display=False):
   format = (Path(inputPath).suffix).lower()
@@ -46,7 +52,8 @@ def copyMetadata(inputPath, coverPath, display=False):
   elif format == '.flac':
     sourceData, coverData = copyFlacMetadata(inputPath, coverPath)
   elif format == '.mp3':
-    sourceData, coverData = copyMp3Metadata(inputPath, coverPath)
+    copyMp3Metadata(inputPath, coverPath)
+    return
 
   if display == True:
     print('\n____Copying metadata________')
