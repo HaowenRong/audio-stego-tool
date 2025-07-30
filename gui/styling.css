@@ -1,0 +1,60 @@
+* {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: bold;
+}
+
+.page {
+  padding: 20px;
+  background-color: var(--background-color);
+}
+
+.title {
+  font-size: x-large;
+}
+
+.navi-bar {
+}
+
+.navi-options-container {
+  padding: 4px;
+  border-radius: 10px;
+  background-color: var(--accent);
+}
+
+.btn {
+  border-radius: 8px;
+  border-width: 0px;
+  background: white;
+  color: var(--primary-color);
+  padding: 10px;
+  padding-left:  50px;
+  padding-right: 50px;
+  font-size: large;
+} .btn:hover {
+  background-color: var(--highlight);
+}
+
+.selection-button {
+  padding: 5px;
+  padding-left:  20px;
+  padding-right: 20px;
+  background-color: var(--accent);
+  color: var(--text-color);
+}
+
+.submit-btn {
+  background-color: var(--accent-blue);
+  border-radius: 50px;
+  color: var(--text-color);
+}
+
+.select-file-btn {
+  padding: 100px;
+  border-radius: 10px;
+  border-width: 0px;
+  background: white;
+  color: black;
+  font-size: large;
+} .select-file-btn:hover {
+  background-color: azure;
+}

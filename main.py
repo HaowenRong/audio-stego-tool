@@ -38,7 +38,7 @@ encode.add_argument(
   '--depth', '-d',
   type=int,
   default=1,
-  help='not yet implemented'
+  help='The number of LSBs to modify for a given frame. (default: 1)'
 )
 
 # decode args
@@ -67,7 +67,7 @@ decode.add_argument(
   '--depth', '-d',
   type=int,
   default=1,
-  help='not yet implemented'
+  help='The number of LSBs to extract for a given frame. (default: 1)'
 )
 
 # compare args
