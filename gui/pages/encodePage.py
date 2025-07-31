@@ -1,4 +1,5 @@
 from gi.repository import Gtk
+import components
 
 class EncodePage(Gtk.Box):
   def __init__(self):
@@ -9,20 +10,20 @@ class EncodePage(Gtk.Box):
     # file selection --------------------------------
     self.fileSection = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10, homogeneous=True)
     self.fileSection.set_halign(Gtk.Align.CENTER)
-    self.audioSelection  = Gtk.Button(label='Select Cover File...')
-    self.audioSelection.add_css_class('select-file-btn')
-    self.outputSelection = Gtk.Button(label='Select Stego File...')
-    self.outputSelection.add_css_class('select-file-btn')
+
+    self.audioSelection = components.Button('Select Cover File...',
+      styles=['select-file-btn'])
+    self.outputSelection = components.Button('Select Stego File...',
+      styles=['select-file-btn'])
 
     self.fileSection.append(self.audioSelection)
     self.fileSection.append(self.outputSelection)
 
     # submit button --------------------------------
-    self.btnSubmit = Gtk.Button(label='Encode')
-    self.btnSubmit.set_halign(Gtk.Align.CENTER)
-    self.btnSubmit.add_css_class('btn')
-    self.btnSubmit.add_css_class('submit-btn')
+    submitButton = components.Button('Encode',
+      styles=['btn', 'submit-btn'],
+      actions=[])
 
     # add elements to page --------------------------------
     self.append(self.fileSection)
-    self.append(self.btnSubmit)
+    self.append(submitButton)

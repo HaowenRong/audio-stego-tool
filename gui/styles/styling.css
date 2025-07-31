@@ -31,7 +31,7 @@
   border-radius: 8px;
   border-width: 0px;
   background: white;
-  color: var(--primary-color);
+  color: var(--text-color);
   padding: 10px;
   padding-left:  50px;
   padding-right: 50px;
@@ -65,9 +65,9 @@
   padding: 60px;
   border-radius: 10px;
   border-width: 0px;
-  background: white;
-  color: black;
+  background: var(--accent);
+  color: var(--text-color);
   font-size: large;
 } .select-file-btn:hover {
-  background-color: azure;
+  background-color: var(--hover);
 }

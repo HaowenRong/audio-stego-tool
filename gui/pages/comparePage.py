@@ -1,4 +1,5 @@
 from gi.repository import Gtk
+import components
 
 class ComparePage(Gtk.Box):
   def __init__(self):
@@ -8,20 +9,20 @@ class ComparePage(Gtk.Box):
     # file selection --------------------------------
     self.fileSection = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10, homogeneous=True)
     self.fileSection.set_halign(Gtk.Align.CENTER)
-    self.audioSelection1  = Gtk.Button(label='Select Audio File 1...')
-    self.audioSelection1.add_css_class('select-file-btn')
-    self.audioSelection2 = Gtk.Button(label='Select Audio File 2...')
-    self.audioSelection2.add_css_class('select-file-btn')
+
+    self.audioSelection1 = components.Button('Select Audio File 1...',
+      styles=['select-file-btn'])
+    self.audioSelection2 = components.Button('Select Audio File 2...',
+      styles=['select-file-btn'])
 
     self.fileSection.append(self.audioSelection1)
     self.fileSection.append(self.audioSelection2)
 
     # submit button --------------------------------
-    self.btnSubmit = Gtk.Button(label='Compare')
-    self.btnSubmit.set_halign(Gtk.Align.CENTER)
-    self.btnSubmit.add_css_class('btn')
-    self.btnSubmit.add_css_class('submit-btn')
+    submitButton = components.Button('Compare',
+      styles=['btn', 'submit-btn'],
+      actions=[])
 
     # add elements to page --------------------------------
     self.append(self.fileSection)
-    self.append(self.btnSubmit)
+    self.append(submitButton)

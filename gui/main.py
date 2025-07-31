@@ -1,4 +1,5 @@
 import gi
+import components
 gi.require_version('Gtk', '4.0')
 from gi.repository import Gtk, Gdk
 from pages.encodePage  import EncodePage
@@ -48,8 +49,7 @@ class MainWindow(Gtk.Window):
     self.naviBar.set_column_spacing(20)
     self.naviBar.add_css_class('navi-bar')
 
-    self.title = Gtk.Label(label='Audio Stego Tool')
-    self.title.add_css_class('title')
+    self.title = components.Label('Audio Stego Tool', styles=['title'])
 
     self.spacer = Gtk.Box()
     self.spacer.set_hexpand(True)
@@ -58,32 +58,24 @@ class MainWindow(Gtk.Window):
     self.options.add_css_class('navi-options-container')
     self.options.set_halign(Gtk.Align.CENTER)
 
-    self.btnEncode = Gtk.Button(label='Encode')
-    self.btnEncode.add_css_class('btn')
-    self.btnEncode.add_css_class('selection-btn')
-    self.btnEncode.add_css_class('selection-btn-highlighted')
-
-    self.btnDecode = Gtk.Button(label='Decode')
-    self.btnDecode.add_css_class('btn')
-    self.btnDecode.add_css_class('selection-btn')
-
-    self.btnCompare = Gtk.Button(label='Compare')
-    self.btnCompare.add_css_class('btn')
-    self.btnCompare.add_css_class('selection-btn')
+    self.btnEncode  = components.Button('Encode',
+      styles =['btn', 'selection-btn', 'selection-btn-highlighted'],
+      actions=[lambda: self.highlightSelection('encode'),
+               lambda: self.stack.set_visible_child_name('encode')])
+    self.btnDecode  = components.Button('Decode',
+      styles =['btn', 'selection-btn'],
+      actions=[lambda: self.highlightSelection('decode'),
+               lambda: self.stack.set_visible_child_name('decode')])
+    self.btnCompare = components.Button('Compare',
+      styles =['btn', 'selection-btn'],
+      actions=[lambda: self.highlightSelection('compare'),
+               lambda: self.stack.set_visible_child_name('compare')])
 
     self.selectionButtons = {
       'encode':  self.btnEncode,
       'decode':  self.btnDecode,
       'compare': self.btnCompare
     }
-
-    # connect button functionality
-    self.btnEncode.connect( 'clicked', lambda b: self.highlightSelection('encode'))
-    self.btnEncode.connect( 'clicked', lambda _: self.stack.set_visible_child_name('encode'))
-    self.btnDecode.connect( 'clicked', lambda b: self.highlightSelection('decode'))
-    self.btnDecode.connect( 'clicked', lambda _: self.stack.set_visible_child_name('decode'))
-    self.btnCompare.connect('clicked', lambda b: self.highlightSelection('compare'))
-    self.btnCompare.connect('clicked', lambda _: self.stack.set_visible_child_name('compare'))
 
     # attach elements together
     self.options.append(self.btnEncode)
