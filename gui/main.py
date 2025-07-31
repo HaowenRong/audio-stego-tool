@@ -1,19 +1,31 @@
-
 import gi
 gi.require_version('Gtk', '4.0')
 from gi.repository import Gtk, Gdk
+from pages.encodePage  import EncodePage
+from pages.decodePage  import DecodePage
+from pages.comparePage import ComparePage
+
 
 class MainWindow(Gtk.Window):
   def __init__(self, **kwargs):
     super().__init__(**kwargs)
-    self.set_title('Audio Stego Tool')
-    self.set_default_size(600, 200)
 
+    # functional variables --------------------------------
+    self.selection = 'encode'
+
+    self.coverFilePath = ''
+    self.StegoFilePath = ''
+
+    # gui --------------------------------
+    self.set_title('Audio Stego Tool')
+    self.set_default_size(100, 100)
+
+    # styling --------------------------------
     provider = Gtk.CssProvider()
-    provider.load_from_path('./root.css')
+    provider.load_from_path('./styles/root.css')
 
     css = Gtk.CssProvider()
-    css.load_from_path('./styling.css')
+    css.load_from_path('./styles/styling.css')
 
     Gtk.StyleContext.add_provider_for_display(
       Gdk.Display.get_default(),
@@ -48,16 +60,32 @@ class MainWindow(Gtk.Window):
 
     self.btnEncode = Gtk.Button(label='Encode')
     self.btnEncode.add_css_class('btn')
-    self.btnEncode.add_css_class('selection-button')
+    self.btnEncode.add_css_class('selection-btn')
+    self.btnEncode.add_css_class('selection-btn-highlighted')
 
     self.btnDecode = Gtk.Button(label='Decode')
     self.btnDecode.add_css_class('btn')
-    self.btnDecode.add_css_class('selection-button')
+    self.btnDecode.add_css_class('selection-btn')
 
     self.btnCompare = Gtk.Button(label='Compare')
     self.btnCompare.add_css_class('btn')
-    self.btnCompare.add_css_class('selection-button')
+    self.btnCompare.add_css_class('selection-btn')
 
+    self.selectionButtons = {
+      'encode':  self.btnEncode,
+      'decode':  self.btnDecode,
+      'compare': self.btnCompare
+    }
+
+    # connect button functionality
+    self.btnEncode.connect( 'clicked', lambda b: self.highlightSelection('encode'))
+    self.btnEncode.connect( 'clicked', lambda _: self.stack.set_visible_child_name('encode'))
+    self.btnDecode.connect( 'clicked', lambda b: self.highlightSelection('decode'))
+    self.btnDecode.connect( 'clicked', lambda _: self.stack.set_visible_child_name('decode'))
+    self.btnCompare.connect('clicked', lambda b: self.highlightSelection('compare'))
+    self.btnCompare.connect('clicked', lambda _: self.stack.set_visible_child_name('compare'))
+
+    # attach elements together
     self.options.append(self.btnEncode)
     self.options.append(self.btnDecode)
     self.options.append(self.btnCompare)
@@ -65,38 +93,41 @@ class MainWindow(Gtk.Window):
     self.naviBar.attach(self.title,   0, 0, 1, 1)
     self.naviBar.attach(self.spacer,  1, 0, 1, 1)
     self.naviBar.attach(self.options, 2, 0, 1, 1)
+
     
+    # page stack
+    self.stack = Gtk.Stack()
+    self.stack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
+    self.stack.set_transition_duration(300)
 
-    # file selection --------------------------------
-    self.fileSection = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10, homogeneous=True)
-    self.fileSection.set_halign(Gtk.Align.CENTER)
-    self.audioSelection  = Gtk.Button(label='Select Cover File...')
-    self.audioSelection.add_css_class('select-file-btn')
-    self.outputSelection = Gtk.Button(label='Select Stego File...')
-    self.outputSelection.add_css_class('select-file-btn')
-
-    self.fileSection.append(self.audioSelection)
-    self.fileSection.append(self.outputSelection)
-
-    # submit button --------------------------------
-    self.btnSubmit = Gtk.Button(label='Encode / Decode')
-    self.btnSubmit.set_halign(Gtk.Align.CENTER)
-    self.btnSubmit.add_css_class('btn')
-    self.btnSubmit.add_css_class('submit-btn')
-
-    # add elements to page --------------------------------
+    self.stack.add_titled(EncodePage(),  'encode',  'Encode')
+    self.stack.add_titled(DecodePage(),  'decode',  'Decode')
+    self.stack.add_titled(ComparePage(), 'compare', 'Compare')
+    
+    
+    # add elements to main page
     self.page.append(self.naviBar)
-    self.page.append(self.fileSection)
-    self.page.append(self.btnSubmit)
-
+    self.page.append(self.stack)
 
     # add main container with all widgets --------------------------------
     self.set_child(self.page)
+    
+  def highlightSelection(self, newSelection):
+    # update selection
+    if newSelection == self.selection:
+      return
+    self.selection = newSelection
+
+    # update ui elements
+    for key, button in self.selectionButtons.items():
+      button.remove_css_class('selection-btn-highlighted')
+      if newSelection == key:
+        button.add_css_class('selection-btn-highlighted')
 
 
-class MyApp(Gtk.Application):
+class App(Gtk.Application):
   def __init__(self):
-    super().__init__(application_id='com.example.GtkApp')
+    super().__init__(application_id='StegoApp')
 
   def do_activate(self):
     win = MainWindow(application=self)
@@ -106,5 +137,5 @@ class MyApp(Gtk.Application):
     Gtk.Application.do_startup(self)
 
 
-app = MyApp()
+app = App()
 app.run()
