@@ -1,10 +1,10 @@
 import numpy     as np
 import soundfile as sf
-from commonFunctions import *
-from metadataFuncs   import *
-from fileHandling    import *
-from compare         import *
-from bitManipulation import *
+from .commonFunctions import *
+from .metadataFuncs   import *
+from .fileHandling    import *
+from .compare         import *
+from .bitManipulation import *
 
 def encodeMessage(inputPath, stegoText, coverPath,
                   startingFrame=0, channels=1, lsbDepth=1):

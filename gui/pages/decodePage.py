@@ -1,5 +1,6 @@
 from gi.repository import Gtk
-import components
+from .. import components
+from stego.decoder import decodeMessage
 
 class DecodePage(Gtk.Box):
   def __init__(self):

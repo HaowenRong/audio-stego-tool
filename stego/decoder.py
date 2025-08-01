@@ -1,8 +1,8 @@
 import numpy     as np
 import soundfile as sf
-from commonFunctions import *
-from fileHandling    import *
-from bitManipulation import *
+from .commonFunctions import *
+from .fileHandling    import *
+from .bitManipulation import *
 
 def decodeMessage(coverPath, messageLength,
                   outputPath=None,

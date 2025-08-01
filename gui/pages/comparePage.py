@@ -1,5 +1,7 @@
 from gi.repository import Gtk
-import components
+from .. import components
+
+from stego.compare import compareAudio
 
 class ComparePage(Gtk.Box):
   def __init__(self):

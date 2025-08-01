@@ -1,11 +1,12 @@
+import sys, os
+
 import gi
-import components
+from . import components
 gi.require_version('Gtk', '4.0')
 from gi.repository import Gtk, Gdk
-from pages.encodePage  import EncodePage
-from pages.decodePage  import DecodePage
-from pages.comparePage import ComparePage
-
+from .pages.encodePage  import EncodePage
+from .pages.decodePage  import DecodePage
+from .pages.comparePage import ComparePage
 
 class MainWindow(Gtk.Window):
   def __init__(self, **kwargs):
@@ -23,10 +24,10 @@ class MainWindow(Gtk.Window):
 
     # styling --------------------------------
     provider = Gtk.CssProvider()
-    provider.load_from_path('./styles/root.css')
+    provider.load_from_path('./gui/styles/root.css')
 
     css = Gtk.CssProvider()
-    css.load_from_path('./styles/styling.css')
+    css.load_from_path('./gui/styles/styling.css')
 
     Gtk.StyleContext.add_provider_for_display(
       Gdk.Display.get_default(),

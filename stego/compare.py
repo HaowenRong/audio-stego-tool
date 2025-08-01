@@ -1,7 +1,7 @@
 import numpy     as np
 import soundfile as sf
-from commonFunctions import *
-from fileHandling    import *
+from .commonFunctions import *
+from .fileHandling    import *
 
 def compareAudio(audioPath1, audioPath2, messageLength,
                  startingFrame=0, channels=1, lsbDepth=1):
