@@ -17,6 +17,18 @@ class ComparePage(Gtk.Box):
     self.audioSelection2 = components.Button('Select Audio File 2...',
       styles=['select-file-btn'])
 
+    fieldStFrame = components.Entry('Starting frame',
+      styles=['btn', 'entry-field'])
+    fieldChannel = components.Entry('Channels',
+      styles=['btn', 'entry-field'])
+    fieldDepth = components.Entry('LSB Depth',
+      styles=['btn', 'entry-field'])
+
+    self.inputsRow = components.InputRow(
+      styles=['entries-container'],
+      labels=['Starting Frame', 'Channels', 'Depth'],
+      fields=[fieldStFrame, fieldChannel, fieldDepth])
+
     self.fileSection.append(self.audioSelection1)
     self.fileSection.append(self.audioSelection2)
 
@@ -27,4 +39,5 @@ class ComparePage(Gtk.Box):
 
     # add elements to page --------------------------------
     self.append(self.fileSection)
+    self.append(self.inputsRow)
     self.append(submitButton)

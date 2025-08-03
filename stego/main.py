@@ -1,7 +1,7 @@
 import argparse
-from encoder import *
-from decoder import *
-from compare import *
+from .encoder import *
+from .decoder import *
+from .compare import *
 
 argParser = argparse.ArgumentParser(
   description='Audio Stego Tool'

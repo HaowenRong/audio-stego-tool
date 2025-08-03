@@ -71,3 +71,19 @@
 } .select-file-btn:hover {
   background-color: var(--hover);
 }
+
+
+.entries-container {
+  padding: 4px;
+  border-radius: 10px;
+}
+.entry-label {
+  margin-left: 4px;
+}
+.entry-field {
+  padding: 2px;
+  padding-left:  20px;
+  padding-right: 20px;
+  background-color: var(--accent);
+  color: var(--subtext-color);
+}
