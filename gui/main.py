@@ -20,7 +20,6 @@ class MainWindow(Gtk.Window):
 
     # gui --------------------------------
     self.set_title('Audio Stego Tool')
-    self.set_default_size(100, 100)
 
     # styling --------------------------------
     provider = Gtk.CssProvider()

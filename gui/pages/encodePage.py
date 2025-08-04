@@ -2,6 +2,7 @@ from gi.repository import Gtk
 from .. import components
 
 from stego.encoder import encodeMessage
+from stego.fileHandling import getStegoText
 
 class EncodePage(Gtk.Box):
   def __init__(self):
@@ -42,7 +43,7 @@ class EncodePage(Gtk.Box):
       styles=['btn', 'submit-btn'],
       actions=[lambda: encodeMessage(
         f'{dir}{inputFile}',
-        f'{dir}{textFile}',
+        getStegoText(f'{dir}{textFile}'),
         f'{dir}{outputFile}',
         startingFrame=int(fieldStFrame.get_text()),
         channels=int(fieldChannel.get_text()),

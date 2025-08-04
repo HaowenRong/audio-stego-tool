@@ -17,7 +17,9 @@ class ComparePage(Gtk.Box):
     self.audioSelection2 = components.Button('Select Audio File 2...',
       styles=['select-file-btn'])
 
-    fieldStFrame = components.Entry('Starting frame',
+    fieldMsgLength = components.Entry('Message Length',
+      styles=['btn', 'entry-field'])
+    fieldStFrame = components.Entry('Starting Frame',
       styles=['btn', 'entry-field'])
     fieldChannel = components.Entry('Channels',
       styles=['btn', 'entry-field'])
@@ -26,16 +28,41 @@ class ComparePage(Gtk.Box):
 
     self.inputsRow = components.InputRow(
       styles=['entries-container'],
-      labels=['Starting Frame', 'Channels', 'Depth'],
-      fields=[fieldStFrame, fieldChannel, fieldDepth])
+      labels=['Message Length', 'Starting Frame', 'Channels', 'Depth'],
+      fields=[fieldMsgLength, fieldStFrame, fieldChannel, fieldDepth])
 
     self.fileSection.append(self.audioSelection1)
     self.fileSection.append(self.audioSelection2)
+
+    dir='audio-files/'
+    inputFile1='input2.flac'
+    inputFile2='input2-out.flac'
 
     # submit button --------------------------------
     submitButton = components.Button('Compare',
       styles=['btn', 'submit-btn'],
       actions=[])
+    
+    submitButton = components.Button('Compare',
+      styles=['btn', 'submit-btn'],
+      actions=[lambda: compareAudio(
+        f'{dir}{inputFile}',
+        getStegoText(f'{dir}{textFile}'),
+        f'{dir}{outputFile}',
+        startingFrame=int(fieldStFrame.get_text()),
+        channels=int(fieldChannel.get_text()),
+        lsbDepth=int(fieldDepth.get_text()))],
+        )
+    
+    submitButton = components.Button('Compare',
+      styles=['btn', 'submit-btn'],
+      actions=[lambda: compareAudio(
+        f'{dir}{inputFile1}',
+        f'{dir}{inputFile2}',
+        int(fieldMsgLength.get_text()),
+        startingFrame=int(fieldStFrame.get_text()),
+        channels=int(fieldChannel.get_text()),
+        lsbDepth=int(fieldDepth.get_text()))])
 
     # add elements to page --------------------------------
     self.append(self.fileSection)

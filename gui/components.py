@@ -1,6 +1,6 @@
 import gi
-from gi.repository import Gtk
 gi.require_version('Gtk', '4.0')
+from gi.repository import Gtk
 
 class Label(Gtk.Label):
   def __init__(self, label, halign=Gtk.Align.CENTER, styles=[]):
@@ -72,3 +72,12 @@ class InputRow(Gtk.Grid):
       self.attach(label, i, 0, 1, 1)
       self.attach(field, i, 1, 1, 1)
 
+class outputBox(Gtk.Label):
+  def __init__(self, label, halign=Gtk.Align.CENTER, styles=[]):
+    super().__init__(label=label)
+
+    self.set_halign(halign)
+
+    # apply css
+    for style in styles:
+      self.add_css_class(style)
