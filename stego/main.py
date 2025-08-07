@@ -71,7 +71,7 @@ decode.add_argument(
 )
 
 # compare args
-compare = subparsers.add_parser('compare', help='')
+compare = subparsers.add_parser('compare', help='Compare audio files with eachother')
 compare.add_argument('audioPath1', type=str)
 compare.add_argument('audioPath2', type=str)
 compare.add_argument('messageLength', type=int)
