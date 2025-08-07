@@ -1,6 +1,6 @@
 import gi
 gi.require_version('Gtk', '4.0')
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib, Pango
 
 class Label(Gtk.Label):
   def __init__(self, label, halign=Gtk.Align.CENTER, styles=[]):
@@ -81,3 +81,46 @@ class outputBox(Gtk.Label):
     # apply css
     for style in styles:
       self.add_css_class(style)
+
+class FilePickerButton(Gtk.Button):
+  def __init__(self, label, halign=Gtk.Align.CENTER, styles=[]):
+    super().__init__()
+
+    self.label = Gtk.Label(label=label)
+    self.label.set_wrap(True)
+    self.label.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
+    self.label.set_width_chars(34)
+    self.label.set_max_width_chars(34)
+
+    self.set_child(self.label)
+
+    # apply css
+    for style in styles:
+      self.add_css_class(style)
+
+    self.connect('clicked', self.selectFile)
+
+  def selectFile(self, button):
+    dialog = Gtk.FileDialog.new()
+    dialog.set_title("Select a file")
+    dialog.set_modal(True)
+
+    dialog.open(
+      parent=self.get_root(),
+      cancellable=None,
+      callback=self.selectedFile,
+      user_data=dialog
+    )
+
+  def selectedFile(self, dialogObj, result, dialog):
+    try:
+      file = dialog.open_finish(result)
+    except GLib.Error:
+      print("Closed")
+      return
+
+    if file:
+      filepath = file.get_path()
+      print("Selected File:", filepath)
+
+      self.label.set_label(filepath)

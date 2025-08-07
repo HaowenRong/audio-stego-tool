@@ -12,9 +12,9 @@ class ComparePage(Gtk.Box):
     self.fileSection = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10, homogeneous=True)
     self.fileSection.set_halign(Gtk.Align.CENTER)
 
-    self.audioSelection1 = components.Button('Select Audio File 1...',
+    self.audioSelection1 = components.FilePickerButton('Select Audio File 1...',
       styles=['select-file-btn'])
-    self.audioSelection2 = components.Button('Select Audio File 2...',
+    self.audioSelection2 = components.FilePickerButton('Select Audio File 2...',
       styles=['select-file-btn'])
 
     fieldMsgLength = components.Entry('Message Length',
@@ -33,10 +33,6 @@ class ComparePage(Gtk.Box):
 
     self.fileSection.append(self.audioSelection1)
     self.fileSection.append(self.audioSelection2)
-
-    dir='audio-files/'
-    inputFile1='input2.flac'
-    inputFile2='input2-out.flac'
 
     # submit button --------------------------------
     submitButton = components.Button('Compare',
@@ -57,8 +53,8 @@ class ComparePage(Gtk.Box):
     submitButton = components.Button('Compare',
       styles=['btn', 'submit-btn'],
       actions=[lambda: compareAudio(
-        f'{dir}{inputFile1}',
-        f'{dir}{inputFile2}',
+        self.audioSelection1.label.get_text(),
+        self.audioSelection2.label.get_text(),
         int(fieldMsgLength.get_text()),
         startingFrame=int(fieldStFrame.get_text()),
         channels=int(fieldChannel.get_text()),

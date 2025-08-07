@@ -2,7 +2,7 @@ from gi.repository import Gtk
 from .. import components
 
 from stego.encoder import encodeMessage
-from stego.fileHandling import getStegoText
+from stego.fileHandling import getStegoText, renamePath
 
 class EncodePage(Gtk.Box):
   def __init__(self):
@@ -13,9 +13,9 @@ class EncodePage(Gtk.Box):
     self.fileSection = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10, homogeneous=True)
     self.fileSection.set_halign(Gtk.Align.CENTER)
 
-    self.audioSelection = components.Button('Select Cover File...',
+    self.audioSelection = components.FilePickerButton('Select Cover File...',
       styles=['select-file-btn'])
-    self.outputSelection = components.Button('Select Stego File...',
+    self.outputSelection = components.FilePickerButton('Select Stego File...',
       styles=['select-file-btn'])
 
     fieldStFrame = components.Entry('Starting frame',
@@ -33,18 +33,13 @@ class EncodePage(Gtk.Box):
     self.fileSection.append(self.audioSelection)
     self.fileSection.append(self.outputSelection)
 
-    dir='audio-files/'
-    inputFile='input2.flac'
-    outputFile='input2-out.flac'
-    textFile='stego-texts/stegoText2.py'
-
     # submit button --------------------------------
     submitButton = components.Button('Encode',
       styles=['btn', 'submit-btn'],
       actions=[lambda: encodeMessage(
-        f'{dir}{inputFile}',
-        getStegoText(f'{dir}{textFile}'),
-        f'{dir}{outputFile}',
+        self.audioSelection.label.get_text(),
+        getStegoText(self.outputSelection.label.get_text()),
+        renamePath(self.audioSelection.label.get_text(), '_cover'),
         startingFrame=int(fieldStFrame.get_text()),
         channels=int(fieldChannel.get_text()),
         lsbDepth=int(fieldDepth.get_text()))])

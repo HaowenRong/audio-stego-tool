@@ -25,7 +25,8 @@ def readAudio(filePath, display=True):
   bitDepth = bitDepthDict.get(info.subtype, 8)
 
   if display == True:
-    print('\n' + filePath)
+    print('\n')
+    print(filePath)
     print('Format     :', info.format)
     print('Shape      :', data.shape)
     print('Frames     :', info.frames)
@@ -45,10 +46,17 @@ def readAudio(filePath, display=True):
     'subtype': info.subtype
   }
 
-def renamePath(filePath):
+def renamePath(filePath, performedAction, suffix=''):
+  print(performedAction)
   basePath = Path(filePath)
-  modifiedFileName = basePath.stem + '_extracted'
-  return basePath.parent + '/' + modifiedFileName + basePath.suffix
+  
+  if suffix != '':
+    suffixToAppend = suffix
+  else:
+    suffixToAppend = basePath.suffix
+
+  modifiedFileName = basePath.stem + performedAction + suffixToAppend
+  return basePath.parent / modifiedFileName
 
 def viewAudio(filePath, frameRange=(0, 100)):
   data, channels, samplerate = readAudio(filePath)

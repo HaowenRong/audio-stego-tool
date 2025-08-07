@@ -1,6 +1,7 @@
 from gi.repository import Gtk
 from .. import components
 from stego.decoder import decodeMessage
+from stego.fileHandling import renamePath
 
 class DecodePage(Gtk.Box):
   def __init__(self):
@@ -10,7 +11,7 @@ class DecodePage(Gtk.Box):
     # file selection --------------------------------
     self.fileSection = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10, homogeneous=True)
     self.fileSection.set_halign(Gtk.Align.CENTER)
-    self.audioSelection = components.Button('Select Cover File...',
+    self.audioSelection = components.FilePickerButton('Select Cover File...',
       styles=['select-file-btn'])
 
     fieldMsgLength = components.Entry('Message Length',
@@ -38,9 +39,9 @@ class DecodePage(Gtk.Box):
     submitButton = components.Button('Decode',
       styles=['btn', 'submit-btn'],
       actions=[lambda: decodeMessage(
-        f'{dir}{inputFile}',
+        self.audioSelection.label.get_text(),
         int(fieldMsgLength.get_text()),
-        outputPath=f'{dir}{outputFile}',
+        outputPath=renamePath(self.audioSelection.label.get_text(), '_extracted', '.txt'),
         startingFrame=int(fieldStFrame.get_text()),
         channels=int(fieldChannel.get_text()),
         lsbDepth=int(fieldDepth.get_text()))])
