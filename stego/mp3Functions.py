@@ -1,6 +1,7 @@
 # tag functions
 def readTags(bs):
   startPos = bs.pos
+  print('sp', startPos)
   
   # check if there are ID3 tags
   indicator = bs.read('bytes:3')
@@ -27,6 +28,7 @@ def readTags(bs):
   tagData = bs.read(f'bytes:{tagsSize}')
 
   endPos = bs.pos
+  print('ep', endPos)
 
   # retrieve bit data of the tags and reset position to end of tags
   bs.pos = startPos
@@ -45,9 +47,9 @@ def readTags(bs):
 
 # frame variables
 layerMap = {
-  0b01: 'l1',
+  0b01: 'l3',
   0b10: 'l2',
-  0b11: 'l3'
+  0b11: 'l1'
 }
 
 mpegVerMap = {
@@ -104,6 +106,7 @@ def findExpectedData(bs):
 
       print(bs.pos)
       bs.pos = startPos
+      print(bs.pos)
       return headerData['mpegVerBits'], headerData['layer']
 
 def findFirstSync(bs, expectedMpeg, expectedLayer):
@@ -133,7 +136,6 @@ def findFirstSync(bs, expectedMpeg, expectedLayer):
         bs.pos = startPos + 1
         continue
 
-      print(bs.pos)
       # if the header is valid exit the loop
       bs.pos = startPos + 11
       return
@@ -171,9 +173,10 @@ def calculateFrameLength(layer, samplerate, bitrate, mpegVer, padding):
   else:
     frameLength = (144 * trueBitrate) // samplerate + padding
 
-  return frameLength * 8
+  return (frameLength * 8)
 
 def readFrame(bs):
+  startPos = bs.pos
   headerData = readHeader(bs)
 
   print(headerData)
@@ -186,10 +189,12 @@ def readFrame(bs):
   frameLength = calculateFrameLength(layer, samplerate,
                                      bitrate, mpegVer, headerData['padding'])
 
-  frameLengthBits = frameLength * 8
-
-  frame = bs.read(frameLengthBits)
-
-  print(bs.pos, 'Frame Length:', frameLengthBits)
+  bs.pos -= 32 # start from before the header data so full frame is read
+  frame = bs.read(frameLength)
 
   return frame
+
+def modifyFrame(frame):
+  modifiedFrame = frame
+
+  return modifiedFrame
