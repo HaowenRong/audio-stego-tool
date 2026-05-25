@@ -25,14 +25,17 @@ jobs:
       - name: Give scripts execution perms
         run: chmod +x tests/*.sh
 
-      - name: Unit tests
-        run: ./tests/unit.sh
+      - name: Basic tests
+        run: ./tests/test-basic.sh
 
-      - name: Integration tests
-        run: ./tests/integration.sh
+      - name: High capacity tests
+        run: ./tests/test-high-capacity.sh
 
-      - name: Negative case tests
-        run: ./tests/negative.sh
+      - name: Late offset tests
+        run: ./tests/test-late-offset.sh
 
-      - name: Property-based tests
-        run: ./tests/property.sh
+      - name: Low detectability tests
+        run: ./tests/test-low-detectability.sh
+
+      - name: Mono channel tests
+        run: ./tests/test-mono-channel.sh
