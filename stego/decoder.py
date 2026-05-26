@@ -1,5 +1,6 @@
 import numpy     as np
 import soundfile as sf
+import math
 from .commonFunctions import *
 from .fileHandling    import *
 from .bitManipulation import *
@@ -12,7 +13,9 @@ def decodeMessage(coverPath, messageLength,
   # read audio file
   audio = readAudio(coverPath)
 
-  messageLength = messageLength * audio['bitDepth']
+  bitsInChar = 8
+  messageLength = messageLength * math.ceil(bitsInChar / lsbDepth)
+  print('depth', messageLength)
 
   channels      = checkSelectedChannels(channels, audio['channels'])
   startingFrame = checkStartingFrame(startingFrame, audio['frames'])
@@ -27,10 +30,8 @@ def decodeMessage(coverPath, messageLength,
     stegoBits += lsb
   
   # convert extracted bits to text and remove null values
-  stegoText = bitsToText(stegoBits).replace('\x00', '')
+  stegoText = bitsToText(stegoBits, display=True).replace('\x00', '')
 
-  print(stegoBits)
-  print(stegoText)
   print('------------------------------')
 
   # save to file

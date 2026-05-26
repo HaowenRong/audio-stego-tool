@@ -1,6 +1,7 @@
 import gi
 gi.require_version('Gtk', '4.0')
 from gi.repository import Gtk, GLib, Pango
+from stego.commonFunctions import calcCapacity, calcDuration
 
 class Label(Gtk.Label):
   def __init__(self, label, halign=Gtk.Align.CENTER, styles=[]):
@@ -30,7 +31,7 @@ class Button(Gtk.Button):
     self.connect('clicked', performActions)
 
 class Entry(Gtk.Entry):
-  def __init__(self, placeholderText, halign=Gtk.Align.CENTER, styles=[], fields=[]):
+  def __init__(self, placeholderText, halign=Gtk.Align.CENTER, styles=[], fields=[], actions=[]):
     super().__init__()
 
     self.set_halign(halign)
@@ -40,6 +41,13 @@ class Entry(Gtk.Entry):
     # apply css
     for style in styles:
       self.add_css_class(style)
+    
+    # connect button functionality
+    def performActions(self):
+      for action in actions:
+        action()
+
+    self.connect('changed', performActions)
 
 class SpinButton(Gtk.SpinButton):
   def __init__(self, halign=Gtk.Align.CENTER, styles=[], fields=[]):
@@ -83,7 +91,7 @@ class outputBox(Gtk.Label):
       self.add_css_class(style)
 
 class FilePickerButton(Gtk.Button):
-  def __init__(self, label, halign=Gtk.Align.CENTER, styles=[]):
+  def __init__(self, label, halign=Gtk.Align.CENTER, styles=[], actions=[]):
     super().__init__()
 
     self.label = Gtk.Label(label=label)
@@ -91,6 +99,8 @@ class FilePickerButton(Gtk.Button):
     self.label.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
     self.label.set_width_chars(34)
     self.label.set_max_width_chars(34)
+
+    self.actions = actions
 
     self.set_child(self.label)
 
@@ -124,3 +134,23 @@ class FilePickerButton(Gtk.Button):
       print("Selected File:", filepath)
 
       self.label.set_label(filepath)
+
+      # connect button functionality
+      for action in self.actions:
+        action()
+
+def updateCapacity(capacityLabel, filePath, startingFrame, channels, lsbDepth):
+
+  newLabel = f'Capacity: {calcCapacity(filePath, startingFrame, channels, lsbDepth) * 8} bytes'
+
+  print(newLabel)
+  capacityLabel.set_label(newLabel)
+
+def updateDuration(durationLabel, audio, message, startingFrame, channels, lsbDepth):
+  # print(audio)
+  # print(message)
+  message = ''.join(f'{ord(c):08b}' for c in message)
+  newLabel = f'Duration: {calcDuration(audio, message, startingFrame, channels, lsbDepth)}s'
+
+  # print(newLabel)
+  durationLabel.set_label(newLabel)

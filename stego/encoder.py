@@ -20,6 +20,9 @@ def encodeMessage(inputPath, stegoText, coverPath,
   if lsbDepth > 1:
     stegoBits = splitBits(stegoBits, lsbDepth)
 
+  a = calcDuration(audio, stegoBits, startingFrame=startingFrame, channels=channels, lsbDepth=lsbDepth)
+  # print('aaaaaaaaaaaaaaaa', a)
+
   for i, segment in enumerate(stegoBits, start=startingFrame):
     channel = i % channels
     frame   = audio['data'][i][channel]
