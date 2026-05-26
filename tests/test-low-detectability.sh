@@ -30,7 +30,7 @@ python -m stego.main encode \
 
 # decode
 python -m stego.main decode \
-  "${dir}${outputFile}" 100 \
+  "${dir}${outputFile}" 1000 \
   -sf "${startingFrame}" -ch "${channels}" -d "${depth}" -o "${dir}${testName}-flac.txt"
 
 # wav
@@ -44,5 +44,25 @@ python -m stego.main encode \
 
 # decode
 python -m stego.main decode \
-  "${dir}${outputFile}" 100 \
+  "${dir}${outputFile}" 1000 \
   -sf "${startingFrame}" -ch "${channels}" -d "${depth}" -o "${dir}${testName}-wav.txt"
+
+
+checkOutput() {
+    local label="$1"
+    local decodedFile="$2"
+    local expectedFile="$3"
+
+    if diff -q "$expectedFile" "$decodedFile"; then
+      echo "PASS [$label]"
+      echo "::notice::test passed"
+    else
+      echo "FAIL [$label]"
+      echo "::error::test failed"
+    fi
+}
+
+expectedOutputsDir="tests/expected-outputs/"
+
+checkOutput "flac" "${dir}${testName}-flac.txt" "${expectedOutputsDir}${testName}-flac.txt"
+checkOutput "wav"  "${dir}${testName}-wav.txt"  "${expectedOutputsDir}${testName}-wav.txt"
