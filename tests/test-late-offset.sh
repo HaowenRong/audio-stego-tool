@@ -55,10 +55,10 @@ checkOutput() {
 
     if diff -q "$expectedFile" "$decodedFile"; then
       echo "PASS [$label]"
-      echo "::notice::test passed"
+      echo "::notice::✅ ${testName} ${label} test passed"
     else
       echo "FAIL [$label]"
-      echo "::error::test failed"
+      echo "::error::❌ ${testName} ${label} test failed"
     fi
 }
 

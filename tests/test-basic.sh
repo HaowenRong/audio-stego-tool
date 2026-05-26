@@ -7,6 +7,7 @@ testName="basic"
 dir="audio-files/"
 textFile="stego-texts/stego.txt"
 
+
 # flac
 inputFile="cover.flac"
 outputFile="stego-${testName}.flac"
@@ -55,10 +56,10 @@ checkOutput() {
 
     if diff -q "$expectedFile" "$decodedFile"; then
       echo "PASS [$label]"
-      echo "::notice::test passed"
+      echo "::notice::✅ ${testName} ${label} test passed"
     else
       echo "FAIL [$label]"
-      echo "::error::test failed"
+      echo "::error::❌ ${testName} ${label} test failed"
     fi
 }
 
