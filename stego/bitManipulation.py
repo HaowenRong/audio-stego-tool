@@ -1,5 +1,6 @@
 import numpy as np
 
+## modify last bit to 1
 def modifyFrame(frameValue, display=False):
   if display:
     print('\n____Modifying Frame________')
@@ -15,6 +16,7 @@ def modifyFrame(frameValue, display=False):
 
   return frameValue
 
+## extract last bit from frame
 def extractFromFrame(frameValue, display=False):
   frameLSB = frameValue & 1
   
@@ -28,6 +30,7 @@ def extractFromFrame(frameValue, display=False):
   return str(frameLSB)
 
 # Multi bit functions
+## extract lsb from binary
 def extractLSBs(frameValue, depth, display=False):
   mask      = (1 << depth) - 1
   frameLSBs = frameValue & mask
@@ -42,6 +45,7 @@ def extractLSBs(frameValue, depth, display=False):
 
   return format(frameLSBs, f'0{depth}b')
 
+## split binary into chunks
 def splitBits(bits, depth):
   chunks = []
 
@@ -54,7 +58,7 @@ def splitBits(bits, depth):
 
   return np.array(chunks)
 
-
+## embed into lsb
 def modifyLSBs(frameValue, lsbArray, depth, display=False):
   clearMask = ~((1 << depth) - 1)
   lsbMask   =  (1  << depth) - 1
