@@ -3,14 +3,34 @@ name: Stego CI
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
+  workflow_dispatch:
 
 jobs:
-  test:
+  function-unit-tests:
     runs-on: ubuntu-latest
 
     steps:
+      # dependencies
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+        
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # tests
+      - name: Unit tests
+        run: pytest
+
+  use-case-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      # dependencies
       - name: Checkout repo
         uses: actions/checkout@v4
 
@@ -25,6 +45,7 @@ jobs:
       - name: Give scripts execution perms
         run: chmod +x tests/*.sh
 
+      # tests
       - name: Basic tests
         run: ./tests/test-basic.sh
 
@@ -39,3 +60,4 @@ jobs:
 
       - name: Mono channel tests
         run: ./tests/test-mono-channel.sh
+
