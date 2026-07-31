@@ -4,10 +4,12 @@ import math
 from .commonFunctions import *
 from .fileHandling    import *
 from .bitManipulation import *
+from .encryption      import *
 
 def decodeMessage(coverPath, messageLength,
                   outputPath=None,
-                  startingFrame=0, channels=1, lsbDepth=1):
+                  startingFrame=0, channels=1, lsbDepth=1,
+                  encryptionKey=None):
   print('\n\n____Decoding________________')
 
   # read audio file
@@ -31,6 +33,9 @@ def decodeMessage(coverPath, messageLength,
   
   # convert extracted bits to text and remove null values
   stegoText = bitsToText(stegoBits, display=True).replace('\x00', '')
+
+  if encryptionKey:
+    stegoText = decryptText(stegoText, encryptionKey)
 
   print('------------------------------')
 

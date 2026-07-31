@@ -5,13 +5,22 @@ from .metadataFuncs   import *
 from .fileHandling    import *
 from .compare         import *
 from .bitManipulation import *
+from .encryption      import *
 
 def encodeMessage(inputPath, stegoText, coverPath,
-                  startingFrame=0, channels=1, lsbDepth=1):
+                  startingFrame=0, channels=1, lsbDepth=1,
+                  encrypt=False, encryptionKey=None):
   print('\n\n____Encoding________________')
 
   # read audio file
   audio = readAudio(inputPath, display=True)
+  
+  # encryption
+  if encrypt:
+    if not encryptionKey:
+      encryptionKey = generateKey()
+
+    stegoText = encryptText(stegoText, encryptionKey)
 
   stegoBits = textToBits(stegoText)
   channels  = checkSelectedChannels(channels, audio['channels'])
@@ -40,3 +49,15 @@ def encodeMessage(inputPath, stegoText, coverPath,
 
   # compare audio properties
   compareAudioInfo(inputPath, coverPath)
+
+  encodingInfo = {
+    'coverFilePath': coverPath,
+    'key': encryptionKey,
+    'startingFrame': startingFrame,
+    'channelsUsed': channels,
+    'depth': lsbDepth
+  }
+
+  print(encodingInfo)
+
+  return encodingInfo
