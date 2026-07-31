@@ -40,6 +40,18 @@ encode.add_argument(
   default=1,
   help='The number of LSBs to modify for a given frame. (default: 1)'
 )
+encode.add_argument(
+  '--encrypt', '-e',
+  type=str,
+  default=False,
+  help='Encrypt the text. (default: False)'
+)
+encode.add_argument(
+  '--encryptionKey', '-key',
+  type=str,
+  default=None,
+  help='Use own key for encryption. Key will be generated if not provided (default: None)'
+)
 
 # decode args
 decode = subparsers.add_parser('decode', help='Extract a message from an audio file')
@@ -68,6 +80,12 @@ decode.add_argument(
   type=int,
   default=1,
   help='The number of LSBs to extract for a given frame. (default: 1)'
+)
+decode.add_argument(
+  '--encryptionKey', '-key',
+  type=str,
+  default=None,
+  help='Use key for decryption. Decryption will not be performed if no key. (default: None)'
 )
 
 # compare args
