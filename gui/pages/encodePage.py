@@ -29,29 +29,57 @@ class EncodePage(Gtk.Box):
 
 
     def updateDurationWithParameters():
-      components.updateDuration(self.durationLabel, 
+      outputPath    = self.outputSelection.label.get_text()
+      startingFrame = fieldStFrame.get_text()
+      channels      = fieldChannel.get_text()
+      lsbDepth      = fieldDepth.get_text()
+
+      if not self.audio:
+        return
+
+      if outputPath == "Select Stego File...":
+        return
+      
+      
+      components.updateDuration(self.durationLabel,
                                 self.audio,
                                 message=getStegoText(self.outputSelection.label.get_text()),
                                 startingFrame=(fieldStFrame.get_text()),
                                 channels=(fieldChannel.get_text()),
                                 lsbDepth=(fieldDepth.get_text()))
 
-    fieldStFrame = components.Entry('Starting frame',
+    # row 1
+    fieldStFrame = components.Entry('0',
       styles=['btn', 'entry-field'],
       actions=[lambda: updateDurationWithParameters()])
-    fieldChannel = components.Entry('Channels',
+    fieldChannel = components.Entry('1',
       styles=['btn', 'entry-field'],
       actions=[lambda: updateDurationWithParameters()])
-    fieldDepth = components.Entry('LSB Depth',
+    fieldDepth = components.Entry('1',
       styles=['btn', 'entry-field'],
       actions=[lambda: updateDurationWithParameters()])
+    
+    # row 2
+    fieldEcrypt = components.Switch('Ecryption (False)',
+      styles=['switch'],
+      actions=[])
+    fieldEcrypt
+    fieldKey = components.Entry('...',
+      styles=['btn', 'entry-field'],
+      actions=[])
+    fieldKey.set_width_chars(50)
 
-    self.inputsRow = components.InputRow(
+    self.inputsRow = components.InputRowUniform(
       styles=['entries-container'],
       labels=['Starting Frame', 'Channels', 'Depth'],
       fields=[fieldStFrame, fieldChannel, fieldDepth])
 
-    self.inputsRow.attach(self.durationLabel, 3,1,1,1)
+    self.inputsRow2 = components.InputRow(
+      styles=['entries-container'],
+      labels=['Encrypt', 'Encryption Key (Optional)'],
+      fields=[fieldEcrypt, fieldKey])
+
+    self.inputsRow2.attach(self.durationLabel, 3,1,1,1)
 
     self.fileSection.append(self.audioSelection)
     self.fileSection.append(self.outputSelection)
@@ -60,19 +88,26 @@ class EncodePage(Gtk.Box):
     submitButton = components.Button('Encode',
       styles=['btn', 'submit-btn'],
       actions=[
-        lambda: print('Parameters', fieldStFrame.get_text(),
+        lambda: print('Parameters',
+          fieldStFrame.get_text(),
           fieldChannel.get_text(),
-          fieldDepth.get_text()),
-        lambda: encodeMessage(
-        self.audioSelection.label.get_text(),
-        getStegoText(self.outputSelection.label.get_text()),
-        renamePath(self.audioSelection.label.get_text(), '_cover'),
-        startingFrame=int(fieldStFrame.get_text()),
-        channels=int(fieldChannel.get_text()),
-        lsbDepth=int(fieldDepth.get_text()))]
+          fieldDepth.get_text(),
+          fieldEcrypt.get_active(),
+          fieldKey.get_text()
+          ),
+        lambda: fieldKey.set_text(encodeMessage(
+          self.audioSelection.label.get_text(),
+          getStegoText(self.outputSelection.label.get_text()),
+          renamePath(self.audioSelection.label.get_text(), '_cover'),
+          startingFrame=int(fieldStFrame.get_text()),
+          channels=int(fieldChannel.get_text()),
+          lsbDepth=int(fieldDepth.get_text()),
+          encrypt=str(fieldEcrypt.get_active()),
+          encryptionKey=str(fieldKey.get_text()))['key'])]
         )
 
     # add elements to page --------------------------------
     self.append(self.fileSection)
     self.append(self.inputsRow)
+    self.append(self.inputsRow2)
     self.append(submitButton)

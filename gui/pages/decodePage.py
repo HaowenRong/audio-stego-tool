@@ -14,19 +14,29 @@ class DecodePage(Gtk.Box):
     self.audioSelection = components.FilePickerButton('Select Cover File...',
       styles=['select-file-btn'])
 
-    fieldMsgLength = components.Entry('Message Length',
+    fieldMsgLength = components.Entry('0',
       styles=['btn', 'entry-field'])
-    fieldStFrame = components.Entry('Starting Frame',
+    fieldStFrame = components.Entry('0',
       styles=['btn', 'entry-field'])
-    fieldChannel = components.Entry('Channels',
+    fieldChannel = components.Entry('1',
       styles=['btn', 'entry-field'])
-    fieldDepth = components.Entry('LSB Depth',
+    fieldDepth = components.Entry('1',
       styles=['btn', 'entry-field'])
 
-    self.inputsRow = components.InputRow(
+    fieldKey = components.Entry('...',
+      styles=['btn', 'entry-field'],
+    actions=[])
+    fieldKey.set_width_chars(50)
+
+    self.inputsRow = components.InputRowUniform(
       styles=['entries-container'],
-      labels=['Message Length', 'Starting Frame', 'Channels', 'Depth'],
+      labels=['Message Length*', 'Starting Frame', 'Channels', 'Depth'],
       fields=[fieldMsgLength, fieldStFrame, fieldChannel, fieldDepth])
+    
+    self.inputsRow2 = components.InputRow(
+      styles=['entries-container'],
+      labels=['Encryption Key (Optional)'],
+      fields=[fieldKey])
 
     self.fileSection.append(self.audioSelection)
 
@@ -38,14 +48,19 @@ class DecodePage(Gtk.Box):
     # submit button --------------------------------
     submitButton = components.Button('Decode',
       styles=['btn', 'submit-btn'],
-      actions=[lambda: decodeMessage(
-        self.audioSelection.label.get_text(),
-        int(fieldMsgLength.get_text()),
-        outputPath=renamePath(self.audioSelection.label.get_text(), '_extracted', '.txt'),
-        startingFrame=int(fieldStFrame.get_text()),
-        channels=int(fieldChannel.get_text()),
-        lsbDepth=int(fieldDepth.get_text()))])
+      actions=[
+        lambda: print(fieldKey.get_text()),
+        lambda: decodeMessage(
+          self.audioSelection.label.get_text(),
+          int(fieldMsgLength.get_text()),
+          outputPath=renamePath(self.audioSelection.label.get_text(), '_extracted', '.txt'),
+          startingFrame=int(fieldStFrame.get_text()),
+          channels=int(fieldChannel.get_text()),
+          lsbDepth=int(fieldDepth.get_text()),
+          encryptionKey=str(fieldKey.get_text()))]
+        )
     # add elements to page --------------------------------
     self.append(self.fileSection)
     self.append(self.inputsRow)
+    self.append(self.inputsRow2)
     self.append(submitButton)

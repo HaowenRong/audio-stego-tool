@@ -84,6 +84,9 @@ def calcDuration(audio, message, startingFrame=0, channels=1, lsbDepth=1):
   # convert to bit string
   #messageBits = ''.join(f'{ord(c):08b}' for c in message)
 
+  if not startingFrame:
+    startingFrame = 0
+
   if not channels:
     channels = 1
 

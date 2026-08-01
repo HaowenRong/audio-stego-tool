@@ -49,6 +49,17 @@ class Entry(Gtk.Entry):
 
     self.connect('changed', performActions)
 
+class Switch(Gtk.Switch):
+  def __init__(self, placeholderText, halign=Gtk.Align.CENTER, styles=[], fields=[], actions=[]):
+    super().__init__()
+
+    self.set_vexpand(False)
+    self.set_valign(Gtk.Align.CENTER)  # Or Gtk.Align.START / Gtk.Align.END
+
+    # apply css
+    for style in styles:
+      self.add_css_class(style)
+
 class SpinButton(Gtk.SpinButton):
   def __init__(self, halign=Gtk.Align.CENTER, styles=[], fields=[]):
     super().__init__()
@@ -73,6 +84,28 @@ class InputRow(Gtk.Grid):
 
     # create and add labels
     for i, (text, field) in enumerate(zip(labels, fields)):
+      label = Gtk.Label(label=text)
+      label.set_halign(Gtk.Align.START)
+      label.set_valign(Gtk.Align.CENTER)
+      label.add_css_class('entry-label')
+      self.attach(label, i, 0, 1, 1)
+      self.attach(field, i, 1, 1, 1)
+
+class InputRowUniform(Gtk.Grid):
+  def __init__(self, halign=Gtk.Align.CENTER, styles=[], labels=[], fields=[]):
+    super().__init__()
+
+    self.set_halign(halign)
+    self.set_row_spacing(4)
+    self.set_column_spacing(8)
+
+    # apply css
+    for style in styles:
+      self.add_css_class(style)
+
+    # create and add labels
+    for i, (text, field) in enumerate(zip(labels, fields)):
+      field.set_size_request(200, -1)
       label = Gtk.Label(label=text)
       label.set_halign(Gtk.Align.START)
       label.set_valign(Gtk.Align.CENTER)
