@@ -1,4 +1,7 @@
 import gi
+
+from datetime import datetime
+
 gi.require_version('Gtk', '4.0')
 from gi.repository import Gtk, GLib, Pango
 from stego.commonFunctions import calcCapacity, calcDuration
@@ -54,7 +57,7 @@ class Switch(Gtk.Switch):
     super().__init__()
 
     self.set_vexpand(False)
-    self.set_valign(Gtk.Align.CENTER)  # Or Gtk.Align.START / Gtk.Align.END
+    self.set_valign(Gtk.Align.CENTER)
 
     # apply css
     for style in styles:
@@ -130,6 +133,45 @@ class outputBox(Gtk.Label):
     # apply css
     for style in styles:
       self.add_css_class(style)
+
+class OutputWindow(Gtk.ScrolledWindow):
+  def __init__(self, halign=Gtk.Align.FILL, placeholderText="", stylesContainer=[], stylesText=[]):
+    super().__init__()
+
+    self.set_vexpand(True)
+    self.set_hexpand(True)
+    self.set_halign(halign)
+    self.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+
+    # apply css to container
+    for style in stylesContainer:
+      self.add_css_class(style)
+
+    self.text_view = Gtk.TextView()
+    self.text_view.set_editable(False)
+    self.text_view.set_cursor_visible(False)
+    self.text_view.set_wrap_mode(Gtk.WrapMode.WORD_CHAR)
+    self.text_view.set_monospace(True)
+
+    self.buffer = self.text_view.get_buffer()
+
+    self.set_size_request(-1, 200)
+
+    if placeholderText:
+      self.buffer.set_text(placeholderText)
+
+    # apply styles to text box
+    for style in stylesText:
+      self.text_view.add_css_class(style)
+
+    self.set_child(self.text_view)
+  
+  def appendText(self, text: str):
+    endIter = self.buffer.get_end_iter()
+
+    currTime = datetime.now().strftime("%H:%M:%S")
+    self.buffer.insert(endIter, '\n' + '[' + currTime + '] ' + text)
+
 
 class FilePickerButton(Gtk.Button):
   def __init__(self, label, halign=Gtk.Align.CENTER, styles=[], actions=[]):

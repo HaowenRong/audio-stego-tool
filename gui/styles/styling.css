@@ -115,3 +115,16 @@
 .spin-btn button.down:hover {
   background-color: var(--hover);
 }
+
+
+.output-window {
+  padding: 10px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: var(--text-color);
+  font-size: large;
+}
+
+.output-window text {
+  background: var(--accent);
+}
