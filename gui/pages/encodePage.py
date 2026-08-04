@@ -52,13 +52,20 @@ class EncodePage(Gtk.Box):
     fieldStFrame = components.Entry('0',
       styles=['btn', 'entry-field'],
       actions=[lambda: updateDurationWithParameters()])
-    fieldChannel = components.Entry('1',
-      styles=['btn', 'entry-field'],
+    fieldChannel = components.SpinButton(
+      styles=['btn', 'entry-field', 'spin-btn'],
+      default=1, min=1, max=8, step=1,
       actions=[lambda: updateDurationWithParameters()])
-    fieldDepth = components.Entry('1',
-      styles=['btn', 'entry-field'],
+    fieldDepth = components.SpinButton(
+      styles=['btn', 'entry-field', 'spin-btn'],
+      default=1, min=1, max=16, step=1,
       actions=[lambda: updateDurationWithParameters()])
     
+    self.inputsRow = components.InputRowUniform(
+      styles=['entries-container'],
+      labels=['Starting Frame', 'Channels', 'Depth'],
+      fields=[fieldStFrame, fieldChannel, fieldDepth])
+
     # row 2
     fieldEcrypt = components.Switch('Ecryption (False)',
       styles=['switch'],
@@ -68,11 +75,6 @@ class EncodePage(Gtk.Box):
       styles=['btn', 'entry-field'],
       actions=[])
     fieldKey.set_width_chars(50)
-
-    self.inputsRow = components.InputRowUniform(
-      styles=['entries-container'],
-      labels=['Starting Frame', 'Channels', 'Depth'],
-      fields=[fieldStFrame, fieldChannel, fieldDepth])
 
     self.inputsRow2 = components.InputRow(
       styles=['entries-container'],

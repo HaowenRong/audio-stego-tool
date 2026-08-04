@@ -95,3 +95,23 @@
 .switch {
   max-height: 10px;
 }
+
+.spin-btn {
+  padding: 4px;
+  padding-left: 10px;
+}
+.spin-btn button {
+}
+.spin-btn button.up {
+  border-radius: 0 5px 5px 0;
+}
+.spin-btn button.down {
+  border-radius: 5px 0 0px 5px;
+}
+.spin-btn button.up:hover {
+  background-color: var(--hover);
+}
+
+.spin-btn button.down:hover {
+  background-color: var(--hover);
+}

@@ -14,14 +14,19 @@ class DecodePage(Gtk.Box):
     self.audioSelection = components.FilePickerButton('Select Cover File...',
       styles=['select-file-btn'])
 
-    fieldMsgLength = components.Entry('0',
-      styles=['btn', 'entry-field'])
-    fieldStFrame = components.Entry('0',
-      styles=['btn', 'entry-field'])
-    fieldChannel = components.Entry('1',
-      styles=['btn', 'entry-field'])
-    fieldDepth = components.Entry('1',
-      styles=['btn', 'entry-field'])
+    fieldMsgLength = components.SpinButton(
+      styles=['btn', 'entry-field', 'spin-btn'],
+      default=1, min=1, max=1000000000, step=1)
+    fieldStFrame = components.SpinButton(
+      styles=['btn', 'entry-field', 'spin-btn'],
+      default=1, min=1, max=1000000000, step=1)
+
+    fieldChannel = components.SpinButton(
+      styles=['btn', 'entry-field', 'spin-btn'],
+      default=1, min=1, max=8, step=1)
+    fieldDepth = components.SpinButton(
+      styles=['btn', 'entry-field', 'spin-btn'],
+      default=1, min=1, max=16, step=1)
 
     fieldKey = components.Entry('...',
       styles=['btn', 'entry-field'],

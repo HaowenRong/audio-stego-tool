@@ -61,14 +61,22 @@ class Switch(Gtk.Switch):
       self.add_css_class(style)
 
 class SpinButton(Gtk.SpinButton):
-  def __init__(self, halign=Gtk.Align.CENTER, styles=[], fields=[]):
-    super().__init__()
+  def __init__(self, halign=Gtk.Align.CENTER, styles=[], fields=[], actions=[], default=1, min=1, max=32, step=1):
 
-    self.set_halign(halign)
+    adjustment = Gtk.Adjustment(value=default, lower=min, upper=max, step_increment=step)
+
+    super().__init__(adjustment=adjustment, climb_rate=1.0, digits=0)
 
     # apply css
     for style in styles:
       self.add_css_class(style)
+    
+    # connect button functionality
+    def performActions(self):
+      for action in actions:
+        action()
+
+    self.connect('changed', performActions)
 
 class InputRow(Gtk.Grid):
   def __init__(self, halign=Gtk.Align.CENTER, styles=[], labels=[], fields=[]):
