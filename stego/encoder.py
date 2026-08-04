@@ -7,18 +7,46 @@ from .compare         import *
 from .bitManipulation import *
 from .encryption      import *
 
-def encodeMessage(inputPath, stegoText, coverPath,
+def encodeMessage(inputPath, coverPath,
+                  stegoText='', stegoPath='',
                   startingFrame=0, channels=1, lsbDepth=1,
                   encrypt=False, encryptionKey=None):
   print('\n\n____Encoding________________')
 
+  encodingInfo = {
+    'message': '',
+    'coverFilePath': coverPath,
+    'key': encryptionKey,
+    'startingFrame': startingFrame,
+    'channelsUsed': channels,
+    'depth': lsbDepth
+  }
+
   # read audio file
-  audio = readAudio(inputPath, display=True)
+  try:
+    audio = readAudio(inputPath, display=True)
+  except Exception as e:
+    message = (f'Invalid audio file path: "{inputPath}"')
+    encodingInfo['message'] = message
+    print(e)
+    return encodingInfo
   
+  # read stego text
+  if stegoPath != '':
+    try:
+      stegoText = getStegoText(stego)
+    except Exception as e:
+      message = (f'Invalid stego file path: "{stego}"')
+      encodingInfo['message'] = message
+      print(e)
+      return encodingInfo
+
   # encryption
-  if encrypt:
+  if encrypt == 'True':
+    print('encrypting??')
     if not encryptionKey:
-      encryptionKey = generateKey()
+      encryptionKey = generateKey().decode()
+      encodingInfo['key'] = encryptionKey
 
     stegoText = encryptText(stegoText, encryptionKey)
 
@@ -50,13 +78,10 @@ def encodeMessage(inputPath, stegoText, coverPath,
   # compare audio properties
   compareAudioInfo(inputPath, coverPath)
 
-  encodingInfo = {
-    'coverFilePath': coverPath,
-    'key': encryptionKey,
-    'startingFrame': startingFrame,
-    'channelsUsed': channels,
-    'depth': lsbDepth
-  }
+  message = (f'Embedded file created at "{coverPath}" with properties: \nstarting frame: {startingFrame}, channels: {channels}, lsb depth: {lsbDepth}')
+  if encrypt == 'True':
+    message += (f',\nencryption key: {encryptionKey}')
+  encodingInfo['message'] = message
 
   print(encodingInfo)
 
