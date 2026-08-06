@@ -11,15 +11,16 @@ def encodeMessage(inputPath, coverPath,
                   stegoText='', stegoPath='',
                   startingFrame=0, channels=1, lsbDepth=1,
                   encrypt=False, encryptionKey=None):
+
   print('\n\n____Encoding________________')
 
   encodingInfo = {
-    'message': '',
+    'message':       '',
     'coverFilePath': coverPath,
-    'key': encryptionKey,
+    'key':           encryptionKey,
     'startingFrame': startingFrame,
-    'channelsUsed': channels,
-    'depth': lsbDepth
+    'channelsUsed':  channels,
+    'depth':         lsbDepth
   }
 
   # read audio file

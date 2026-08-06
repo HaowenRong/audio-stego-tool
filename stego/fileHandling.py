@@ -35,8 +35,6 @@ def readAudio(filePath, display=True):
     print('duration   :', info._duration_str)
     print('Channels   :', info.channels)
 
-  # return data, info.channels, info.samplerate, info.frames
-
   return {
     'data': data,
     'samplerate': samplerate,

@@ -21,15 +21,17 @@ class EncodePage(Gtk.Box):
 
     self.audioSelection = components.FilePickerButton('Select Cover File...',
       styles=['select-file-btn'],
-      actions=[lambda: loadAudio(self.audioSelection.label.get_text())])
-    self.outputSelection = components.FilePickerButton('Select Stego File...',
-      styles=['select-file-btn'])
+      actions=[lambda: loadAudio(self.audioSelection.label.get_text()),
+               lambda: updateDurationWithParameters()])
+    self.stegoSelection = components.FilePickerButton('Select Stego File...',
+      styles=['select-file-btn'],
+      actions=[lambda: updateDurationWithParameters()])
 
     self.durationLabel = components.Label(f'Duration: 0s')
 
 
     def updateDurationWithParameters():
-      outputPath    = self.outputSelection.label.get_text()
+      outputPath    = self.stegoSelection.label.get_text()
       startingFrame = fieldStFrame.get_text()
       channels      = fieldChannel.get_text()
       lsbDepth      = fieldDepth.get_text()
@@ -43,14 +45,15 @@ class EncodePage(Gtk.Box):
       
       components.updateDuration(self.durationLabel,
                                 self.audio,
-                                message=getStegoText(self.outputSelection.label.get_text()),
+                                message=getStegoText(self.stegoSelection.label.get_text()),
                                 startingFrame=(fieldStFrame.get_text()),
                                 channels=(fieldChannel.get_text()),
                                 lsbDepth=(fieldDepth.get_text()))
 
     # row 1
-    fieldStFrame = components.Entry('0',
-      styles=['btn', 'entry-field'],
+    fieldStFrame = components.SpinButton(
+      styles=['btn', 'entry-field', 'spin-btn'],
+      default=1, min=1, max=1000000000, step=1,
       actions=[lambda: updateDurationWithParameters()])
     fieldChannel = components.SpinButton(
       styles=['btn', 'entry-field', 'spin-btn'],
@@ -72,8 +75,7 @@ class EncodePage(Gtk.Box):
       actions=[])
     fieldEcrypt
     fieldKey = components.Entry('...',
-      styles=['btn', 'entry-field'],
-      actions=[])
+      styles=['btn', 'entry-field'])
     fieldKey.set_width_chars(50)
 
     self.inputsRow2 = components.InputRow(
@@ -84,7 +86,23 @@ class EncodePage(Gtk.Box):
     self.inputsRow2.attach(self.durationLabel, 3,1,1,1)
 
     self.fileSection.append(self.audioSelection)
-    self.fileSection.append(self.outputSelection)
+    self.fileSection.append(self.stegoSelection)
+
+    def encodeViaGui():
+
+      res = encodeMessage(
+        self.audioSelection.label.get_text(),
+        renamePath(self.audioSelection.label.get_text(), '_cover'),
+        self.stegoSelection.label.get_text(),
+        startingFrame = int(fieldStFrame.get_text()),
+        channels      = int(fieldChannel.get_text()),
+        lsbDepth      = int(fieldDepth.get_text()),
+        encrypt       = str(fieldEcrypt.get_active()),
+        encryptionKey = str(fieldKey.get_text()))
+      
+      fieldKey.set_text(res['key'])
+      
+      self.outputBox.appendText(res['message'])
 
     # submit button --------------------------------
     submitButton = components.Button('Encode',
@@ -97,19 +115,14 @@ class EncodePage(Gtk.Box):
           fieldEcrypt.get_active(),
           fieldKey.get_text()
           ),
-        lambda: fieldKey.set_text(encodeMessage(
-          self.audioSelection.label.get_text(),
-          getStegoText(self.outputSelection.label.get_text()),
-          renamePath(self.audioSelection.label.get_text(), '_cover'),
-          startingFrame=int(fieldStFrame.get_text()),
-          channels=int(fieldChannel.get_text()),
-          lsbDepth=int(fieldDepth.get_text()),
-          encrypt=str(fieldEcrypt.get_active()),
-          encryptionKey=str(fieldKey.get_text()))['key'])]
+        lambda: encodeViaGui()]
         )
+
+    self.outputBox = components.OutputWindow(placeholderText='Outputs Here', stylesContainer=[], stylesText=['output-window'])
 
     # add elements to page --------------------------------
     self.append(self.fileSection)
     self.append(self.inputsRow)
     self.append(self.inputsRow2)
     self.append(submitButton)
+    self.append(self.outputBox)

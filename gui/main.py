@@ -80,7 +80,7 @@ class MainWindow(Gtk.Window):
     # attach elements together
     self.options.append(self.btnEncode)
     self.options.append(self.btnDecode)
-    self.options.append(self.btnCompare)
+    # self.options.append(self.btnCompare)
 
     self.naviBar.attach(self.title,   0, 0, 1, 1)
     self.naviBar.attach(self.spacer,  1, 0, 1, 1)
