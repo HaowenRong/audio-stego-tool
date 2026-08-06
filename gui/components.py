@@ -169,8 +169,8 @@ class OutputWindow(Gtk.ScrolledWindow):
   def appendText(self, text: str):
     endIter = self.buffer.get_end_iter()
 
-    currTime = datetime.now().strftime("%H:%M:%S")
-    self.buffer.insert(endIter, '\n' + '[' + currTime + '] ' + text)
+    currTime = datetime.now().strftime('%H:%M:%S')
+    self.buffer.insert(endIter, '\n\n' + '[' + currTime + '] ' + text)
 
 
 class FilePickerButton(Gtk.Button):

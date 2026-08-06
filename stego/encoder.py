@@ -7,7 +7,7 @@ from .compare         import *
 from .bitManipulation import *
 from .encryption      import *
 
-def encodeMessage(inputPath, coverPath,
+def encodeMessage(audioPath, coverPath,
                   stegoText='', stegoPath='',
                   startingFrame=0, channels=1, lsbDepth=1,
                   encrypt=False, encryptionKey=None):
@@ -25,19 +25,20 @@ def encodeMessage(inputPath, coverPath,
 
   # read audio file
   try:
-    audio = readAudio(inputPath, display=True)
+    audio = readAudio(audioPath, display=True)
   except Exception as e:
-    message = (f'Invalid audio file path: "{inputPath}"')
+    message = (f'Invalid audio file path: "{audioPath}"')
     encodingInfo['message'] = message
     print(e)
+    
     return encodingInfo
   
   # read stego text
   if stegoPath != '':
     try:
-      stegoText = getStegoText(stego)
+      stegoText = getStegoText(stegoPath)
     except Exception as e:
-      message = (f'Invalid stego file path: "{stego}"')
+      message = (f'Invalid stego file path: "{stegoPath}"')
       encodingInfo['message'] = message
       print(e)
       return encodingInfo
@@ -73,11 +74,11 @@ def encodeMessage(inputPath, coverPath,
   sf.write(coverPath, audio['data'], audio['samplerate'], subtype=audio['subtype'])
   
   # copy metadata
-  # copyMetadata(inputPath, coverPath, display=True)
-  copyMetadata(inputPath, coverPath, display=True)
+  # copyMetadata(audioPath, coverPath, display=True)
+  copyMetadata(audioPath, coverPath, display=True)
 
   # compare audio properties
-  compareAudioInfo(inputPath, coverPath)
+  compareAudioInfo(audioPath, coverPath)
 
   message = (f'Embedded file created at "{coverPath}" with properties: \nstarting frame: {startingFrame}, channels: {channels}, lsb depth: {lsbDepth}')
   if encrypt == 'True':

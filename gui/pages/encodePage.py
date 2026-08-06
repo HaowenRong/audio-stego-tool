@@ -53,7 +53,7 @@ class EncodePage(Gtk.Box):
     # row 1
     fieldStFrame = components.SpinButton(
       styles=['btn', 'entry-field', 'spin-btn'],
-      default=1, min=1, max=1000000000, step=1,
+      default=0, min=0, max=1000000000, step=1,
       actions=[lambda: updateDurationWithParameters()])
     fieldChannel = components.SpinButton(
       styles=['btn', 'entry-field', 'spin-btn'],
@@ -93,7 +93,7 @@ class EncodePage(Gtk.Box):
       res = encodeMessage(
         self.audioSelection.label.get_text(),
         renamePath(self.audioSelection.label.get_text(), '_cover'),
-        self.stegoSelection.label.get_text(),
+        stegoPath     = self.stegoSelection.label.get_text(),
         startingFrame = int(fieldStFrame.get_text()),
         channels      = int(fieldChannel.get_text()),
         lsbDepth      = int(fieldDepth.get_text()),

@@ -6,14 +6,31 @@ from .fileHandling    import *
 from .bitManipulation import *
 from .encryption      import *
 
-def decodeMessage(coverPath, messageLength,
+def decodeMessage(audioPath, messageLength,
                   outputPath=None,
                   startingFrame=0, channels=1, lsbDepth=1,
                   encryptionKey=None):
   print('\n\n____Decoding________________')
 
+  decodingInfo = {
+    'message':       '',
+    'coverFilePath': audioPath,
+    'messageLength': messageLength,
+    'key':           encryptionKey,
+    'startingFrame': startingFrame,
+    'channelsUsed':  channels,
+    'depth':         lsbDepth
+  }
+
   # read audio file
-  audio = readAudio(coverPath)
+  try:
+    audio = readAudio(audioPath, display=True)
+  except Exception as e:
+    message = (f'Invalid audio file path: "{audioPath}"')
+    decodingInfo['message'] = message
+    print(e)
+    
+    return decodingInfo
 
   bitsInChar = 8
   messageLength = messageLength * math.ceil(bitsInChar / lsbDepth)
@@ -42,3 +59,10 @@ def decodeMessage(coverPath, messageLength,
   # save to file
   if outputPath != None:
     saveStegoText(outputPath, stegoText)
+  
+  message = (f'Decoded text to "{outputPath}" using properties: \nmessage length: {messageLength} starting frame: {startingFrame}, channels: {channels}, lsb depth: {lsbDepth}')
+  if encryptionKey:
+    message += (f',\nencryption key: {encryptionKey}')
+  decodingInfo['message'] = message
+
+  return decodingInfo

@@ -19,7 +19,7 @@ class DecodePage(Gtk.Box):
       default=1, min=1, max=1000000000, step=1)
     fieldStFrame = components.SpinButton(
       styles=['btn', 'entry-field', 'spin-btn'],
-      default=1, min=1, max=1000000000, step=1)
+      default=0, min=0, max=1000000000, step=1)
 
     fieldChannel = components.SpinButton(
       styles=['btn', 'entry-field', 'spin-btn'],
@@ -50,22 +50,32 @@ class DecodePage(Gtk.Box):
     outputFile='input2-out.txt'
     textFile='stego-texts/stegoText2.py'
 
+    def decodeViaGui():
+
+      res = decodeMessage(
+        self.audioSelection.label.get_text(),
+        int(fieldMsgLength.get_text()),
+        outputPath=renamePath(self.audioSelection.label.get_text(), '_extracted', '.txt'),
+        startingFrame = int(fieldStFrame.get_text()),
+        channels      = int(fieldChannel.get_text()),
+        lsbDepth      = int(fieldDepth.get_text()),
+        encryptionKey = str(fieldKey.get_text()))
+      
+      self.outputBox.appendText(res['message'])
+
     # submit button --------------------------------
     submitButton = components.Button('Decode',
       styles=['btn', 'submit-btn'],
       actions=[
         lambda: print(fieldKey.get_text()),
-        lambda: decodeMessage(
-          self.audioSelection.label.get_text(),
-          int(fieldMsgLength.get_text()),
-          outputPath=renamePath(self.audioSelection.label.get_text(), '_extracted', '.txt'),
-          startingFrame=int(fieldStFrame.get_text()),
-          channels=int(fieldChannel.get_text()),
-          lsbDepth=int(fieldDepth.get_text()),
-          encryptionKey=str(fieldKey.get_text()))]
+        lambda: decodeViaGui()]
         )
+    
+    self.outputBox = components.OutputWindow(placeholderText='Outputs Here', stylesContainer=[], stylesText=['output-window'])
+
     # add elements to page --------------------------------
     self.append(self.fileSection)
     self.append(self.inputsRow)
     self.append(self.inputsRow2)
     self.append(submitButton)
+    self.append(self.outputBox)
