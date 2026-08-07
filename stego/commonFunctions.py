@@ -8,8 +8,9 @@ def textToBits(stegoText, display=False):
 
   if display == True:
     print('\n____Converting text to bits________')
-    print('Text ----------------\n', frameValue)
-    print('Bits ----------------\n', bin(frameValue))
+    print('Text ----------------\n', stegoText)
+    print('Bits ----------------\n', bits)
+    print('Length --------------\n', len(stegoText))
 
   return bits
 
@@ -23,6 +24,27 @@ def bitsToText(bits, display=False):
     print('Text ----------------\n', text)
 
   return text
+
+def encryptedLength(messageLength):
+  overhead   = 57
+  padding    = 16 * (messageLength // 16 + 1)
+  totalBytes = overhead + padding
+
+  totalLength = 4 * math.ceil((totalBytes) / 3)
+
+  return totalLength
+
+def getTotalFrames(messageLength, lsbDepth, encrypted=False):
+  bitsInChar = 8
+
+  if encrypted:
+    totalBits   = encryptedLength(messageLength) * bitsInChar
+    totalFrames = math.ceil(totalBits / lsbDepth)
+  else:
+    totalBits   = messageLength * bitsInChar
+    totalFrames = math.ceil(totalBits / lsbDepth)
+
+  return totalFrames
 
 
 def checkSelectedChannels(channels, totalChannels):

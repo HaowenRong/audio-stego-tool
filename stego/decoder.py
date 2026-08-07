@@ -32,13 +32,12 @@ def decodeMessage(audioPath, messageLength,
     
     return decodingInfo
 
-  bitsInChar = 8
-  messageLength = messageLength * math.ceil(bitsInChar / lsbDepth)
-  print('depth', messageLength)
+  totalFrames = getTotalFrames(messageLength, lsbDepth, encrypted=(True if encryptionKey else False))
+  print('totalFrames ------------------------- ', totalFrames)
 
   channels      = checkSelectedChannels(channels, audio['channels'])
   startingFrame = checkStartingFrame(startingFrame, audio['frames'])
-  endingFrame   = checkEndingFrame(startingFrame + messageLength, audio['frames'])
+  endingFrame   = checkEndingFrame(startingFrame + totalFrames, audio['frames'])
 
   stegoBits = ''
   for frame in range(startingFrame, endingFrame):
