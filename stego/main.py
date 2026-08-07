@@ -13,14 +13,19 @@ subparsers = argParser.add_subparsers(dest='selection', required=True)
 encode = subparsers.add_parser('encode', help='Embed a message into an audio file')
 # required args
 encode.add_argument('filePath',   type=str)
-encode.add_argument('stegoText',  type=str)
 encode.add_argument('outputPath', type=str)
 # optional args
 encode.add_argument(
-  '--readFile', '-rf',
+  '--stegoText', '-st',
   type=str,
-  default='n',
-  help='Read message from a text file. (default: N)'
+  default='',
+  help='The stego text to encode'
+)
+encode.add_argument(
+  '--stegoPath', '-sp',
+  type=str,
+  default='',
+  help='The path to the stego text file to encode'
 )
 encode.add_argument(
   '--startFrame', '-sf',
@@ -58,6 +63,12 @@ decode = subparsers.add_parser('decode', help='Extract a message from an audio f
 decode.add_argument('filePath',      type=str)
 decode.add_argument('messageLength', type=int)
 decode.add_argument(
+  '--outputPath', '-o',
+  type=str,
+  default='',
+  help='The path to the output text file'
+)
+decode.add_argument(
   '--startFrame', '-sf',
   type=int,
   default=0,
@@ -68,12 +79,6 @@ decode.add_argument(
   type=int,
   default=1,
   help='The number of channels that will be used when extracting the message. (default: 1)'
-)
-decode.add_argument(
-  '--output', '-o',
-  type=str,
-  default=None,
-  help='Output the extracted text into a file.'
 )
 decode.add_argument(
   '--depth', '-d',
@@ -115,24 +120,23 @@ compare.add_argument(
 args = argParser.parse_args()
 
 if args.selection == 'encode':
-  if args.readFile.lower() == 'y':
-    stegoText = getStegoText(args.stegoText)
-  else:
-    stegoText = args.stegoText
   encodeMessage(
     # required params
-    args.filePath, stegoText, args.outputPath,
+    args.filePath, args.outputPath,
     # optional params
-    startingFrame=args.startFrame, channels=args.channels, lsbDepth=args.depth
-    )
+    args.stegoText, args.stegoPath,
+    startingFrame=args.startFrame, channels=args.channels, lsbDepth=args.depth,
+    encrypt=args.encrypt, encryptionKey=args.encryptionKey
+  )
 elif args.selection == 'decode':
   decodeMessage(
     # required params
     args.filePath, args.messageLength,
     # optional params
-    outputPath=args.output, startingFrame=args.startFrame, channels=args.channels,
-    lsbDepth=args.depth
-    )
+    outputPath=args.output,
+    startingFrame=args.startFrame, channels=args.channels, lsbDepth=args.depth,
+    encryptionKey=args.encryptionKey
+  )
 elif args.selection == 'compare':
   compareAudio(
     args.audioPath1, args.audioPath2, args.messageLength,

@@ -51,13 +51,21 @@ def decodeMessage(audioPath, messageLength,
   stegoText = bitsToText(stegoBits, display=True).replace('\x00', '')
 
   if encryptionKey:
-    stegoText = decryptText(stegoText, encryptionKey)
+    try:
+      stegoText = decryptText(stegoText, encryptionKey)
+    except Exception as e:
+      message = (f'Error decrypting with encryption key: "{encryptionKey}"')
+      decodingInfo['message'] = message
+      print(e)
+      return decodingInfo
 
   print('------------------------------')
 
   # save to file
   if outputPath != None:
     saveStegoText(outputPath, stegoText)
+  else:
+    print(stegoText)
   
   message = (f'Decoded text to "{outputPath}" using properties: \nmessage length: {messageLength} starting frame: {startingFrame}, channels: {channels}, lsb depth: {lsbDepth}')
   if encryptionKey:

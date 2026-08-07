@@ -30,7 +30,6 @@ def encodeMessage(audioPath, coverPath,
     message = (f'Invalid audio file path: "{audioPath}"')
     encodingInfo['message'] = message
     print(e)
-    
     return encodingInfo
   
   # read stego text
@@ -45,14 +44,19 @@ def encodeMessage(audioPath, coverPath,
 
   # encryption
   if encrypt == 'True':
-    print('encrypting??')
     if not encryptionKey:
       encryptionKey = generateKey().decode()
       encodingInfo['key'] = encryptionKey
 
-    stegoText = encryptText(stegoText, encryptionKey)
+    try:
+      stegoText = encryptText(stegoText, encryptionKey)
+    except Exception as e:
+      message = (f'Error encrypting with encryption key: "{encryptionKey}"')
+      encodingInfo['message'] = message
+      print(e)
+      return encodingInfo
 
-  stegoBits = textToBits(stegoText)
+  stegoBits = textToBits(stegoText, display=True)
   channels  = checkSelectedChannels(channels, audio['channels'])
   
   # if using higher bit depths, split bits into chunks
