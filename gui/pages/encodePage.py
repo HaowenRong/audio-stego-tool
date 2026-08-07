@@ -14,6 +14,11 @@ class EncodePage(Gtk.Box):
 
     def loadAudio(path):
       self.audio = readAudio(path)
+    
+    def updateBoundaries():
+      fieldStFrame.get_adjustment().set_upper(self.audio['frames'])
+      fieldChannel.get_adjustment().set_upper(self.audio['channels'])
+      fieldDepth  .get_adjustment().set_upper(self.audio['bitDepth'])
 
     # file selection --------------------------------
     self.fileSection = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10, homogeneous=True)
@@ -22,13 +27,13 @@ class EncodePage(Gtk.Box):
     self.audioSelection = components.FilePickerButton('Select Cover File...',
       styles=['select-file-btn'],
       actions=[lambda: loadAudio(self.audioSelection.label.get_text()),
+               lambda: updateBoundaries(),
                lambda: updateDurationWithParameters()])
     self.stegoSelection = components.FilePickerButton('Select Stego File...',
       styles=['select-file-btn'],
       actions=[lambda: updateDurationWithParameters()])
 
     self.durationLabel = components.Label(f'Duration: 0s')
-
 
     def updateDurationWithParameters():
       outputPath    = self.stegoSelection.label.get_text()
@@ -42,7 +47,6 @@ class EncodePage(Gtk.Box):
       if outputPath == "Select Stego File...":
         return
       
-      
       components.updateDuration(self.durationLabel,
                                 self.audio,
                                 message=getStegoText(self.stegoSelection.label.get_text()),
@@ -53,7 +57,7 @@ class EncodePage(Gtk.Box):
     # row 1
     fieldStFrame = components.SpinButton(
       styles=['btn', 'entry-field', 'spin-btn'],
-      default=0, min=0, max=1000000000, step=1,
+      default=0, min=0, max=1000000, step=1,
       actions=[lambda: updateDurationWithParameters()])
     fieldChannel = components.SpinButton(
       styles=['btn', 'entry-field', 'spin-btn'],

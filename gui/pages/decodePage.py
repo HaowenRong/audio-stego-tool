@@ -2,24 +2,34 @@ from gi.repository import Gtk
 from .. import components
 from stego.decoder import decodeMessage
 from stego.fileHandling import renamePath
+from stego.fileHandling import readAudio
 
 class DecodePage(Gtk.Box):
   def __init__(self):
     super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=40)
     self.add_css_class('page-container')
 
+    def updateBoundaries(audioPath):
+      audio = readAudio(audioPath)
+
+      fieldMsgLength.get_adjustment().set_upper(audio['frames'] / 8)
+      fieldStFrame  .get_adjustment().set_upper(audio['frames'])
+      fieldChannel  .get_adjustment().set_upper(audio['channels'])
+      fieldDepth    .get_adjustment().set_upper(audio['bitDepth'])
+
     # file selection --------------------------------
     self.fileSection = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10, homogeneous=True)
     self.fileSection.set_halign(Gtk.Align.CENTER)
     self.audioSelection = components.FilePickerButton('Select Cover File...',
-      styles=['select-file-btn'])
+      styles=['select-file-btn'],
+      actions=[lambda: updateBoundaries(self.audioSelection.label.get_text())])
 
     fieldMsgLength = components.SpinButton(
       styles=['btn', 'entry-field', 'spin-btn'],
-      default=1, min=1, max=1000000000, step=1)
+      default=1, min=1, max=1000000, step=1)
     fieldStFrame = components.SpinButton(
       styles=['btn', 'entry-field', 'spin-btn'],
-      default=0, min=0, max=1000000000, step=1)
+      default=0, min=0, max=1000000, step=1)
 
     fieldChannel = components.SpinButton(
       styles=['btn', 'entry-field', 'spin-btn'],
