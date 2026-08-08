@@ -67,18 +67,19 @@ def encodeMessage(audioPath, coverPath,
     channel = i % channels
     frame   = audio['data'][i][channel]
 
+    segmentLen = len(segment)
+
     # skip frame if lsb is already the same
-    if segment == extractLSBs(frame, lsbDepth, display=False):
+    if segment == extractLSBs(frame, segmentLen, display=False):
       continue
     
     # modify bits
-    audio['data'][i][channel] = modifyLSBs(frame, segment, lsbDepth, display=False)
+    audio['data'][i][channel] = modifyLSBs(frame, segment, segmentLen, display=False)
 
   # write to cover file
   sf.write(coverPath, audio['data'], audio['samplerate'], subtype=audio['subtype'])
   
   # copy metadata
-  # copyMetadata(audioPath, coverPath, display=True)
   copyMetadata(audioPath, coverPath, display=True)
 
   # compare audio properties

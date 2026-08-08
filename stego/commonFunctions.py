@@ -34,21 +34,23 @@ def encryptedLength(messageLength):
 
   return totalLength
 
-def getTotalFrames(messageLength, lsbDepth, encrypted=False):
+def getTotalBits(messageLength, encrypted=False):
   bitsInChar = 8
 
   if encrypted:
-    totalBits   = encryptedLength(messageLength) * bitsInChar
-    totalFrames = math.ceil(totalBits / lsbDepth)
-  else:
-    totalBits   = messageLength * bitsInChar
-    totalFrames = math.ceil(totalBits / lsbDepth)
+    messageLength = encryptedLength(messageLength)
+
+  return messageLength * bitsInChar
+
+def getTotalFrames(messageLength, lsbDepth, encrypted=False):
+  totalBits   = getTotalBits(messageLength, encrypted=encrypted)
+  totalFrames = math.ceil(totalBits / lsbDepth)
 
   return totalFrames
 
 
 def checkSelectedChannels(channels, totalChannels):
-    # make sure selected number of channels does not exceed total channels
+  # make sure selected number of channels does not exceed total channels
   if channels > totalChannels:
     print(f'Selected channels ({channels}) exceeds total channels of selected audio file ({totalChannels}).')
     print(f'Setting channels to audios total. {channels} > {totalChannels}')

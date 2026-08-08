@@ -39,14 +39,24 @@ def decodeMessage(audioPath, messageLength,
   startingFrame = checkStartingFrame(startingFrame, audio['frames'])
   endingFrame   = checkEndingFrame(startingFrame + totalFrames, audio['frames'])
 
-  stegoBits = ''
+  # decode bits
+  totalBits     = getTotalBits(messageLength, encrypted=encryptionKey)
+  collectedBits = []
+  remainingBits = totalBits % lsbDepth
+
   for frame in range(startingFrame, endingFrame):
-    channel = frame % channels
+    channel   = frame % channels
+    lastFrame = (frame == endingFrame - 1)
+
+    if lastFrame and remainingBits != 0:
+      lsbDepth = remainingBits
 
     # extract bits
     lsb = extractLSBs(audio['data'][frame][channel], lsbDepth, display=False)
-    stegoBits += lsb
-  
+    collectedBits.append(lsb)
+
+  stegoBits = ''.join(collectedBits)
+
   # convert extracted bits to text and remove null values
   stegoText = bitsToText(stegoBits, display=True).replace('\x00', '')
 
