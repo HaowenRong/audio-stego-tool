@@ -3,7 +3,7 @@ set -euo pipefail
 
 cd "$(dirname "$0")"
 
-dir="../audio-files/"
+dir="audio-files/"
 textFile="stego-texts/stego.txt"
 
 messageLength=$(printf '%s' "$(cat "${dir}${textFile}")" | wc -c | tr -d '[:space:]')
