@@ -133,7 +133,7 @@ elif args.selection == 'decode':
     # required params
     args.filePath, args.messageLength,
     # optional params
-    outputPath=args.output,
+    outputPath=args.outputPath,
     startingFrame=args.startFrame, channels=args.channels, lsbDepth=args.depth,
     encryptionKey=args.encryptionKey
   )

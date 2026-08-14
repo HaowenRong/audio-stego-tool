@@ -11,7 +11,12 @@ from stego.bitManipulation import *
   ('A', False, '01000001'),
   ('This is a test', False, '0101010001101000011010010111001100100000011010010111001100100000011000010010000001110100011001010111001101110100'),
   ('1', False, '00110001'),
-  ('123456789', False, '001100010011001000110011001101000011010100110110001101110011100000111001')
+  ('123456789', False, '001100010011001000110011001101000011010100110110001101110011100000111001'),
+  ('!', False, '00100001'),
+  ('@', False, '01000000'),
+  ('~', False, '01111110'),
+  (' ', False, '00100000'),
+  ('#$%', False, '001000110010010000100101'),
 ])
 
 def test_textToBits(stegoText, display, expected):
@@ -23,13 +28,60 @@ def test_textToBits(stegoText, display, expected):
   ('01000001', False, 'A'),
   ('0101010001101000011010010111001100100000011010010111001100100000011000010010000001110100011001010111001101110100', False, 'This is a test'),
   ('00110001', False, '1'),
-  ('001100010011001000110011001101000011010100110110001101110011100000111001', False, '123456789')
+  ('001100010011001000110011001101000011010100110110001101110011100000111001', False, '123456789'),
+  ('00100001', False, '!'),
+  ('01000000', False, '@'),
+  ('01111110', False, '~'),
+  ('00100000', False, ' '),
+  ('001000110010010000100101', False, '#$%'),
 ])
-
 def test_bitsToText(bits, display, expected):
   assert bitsToText(bits, display) == expected
 
-# modifyFrame
+# encryptedLength
+@pytest.mark.parametrize("messageLength, expected", [
+  (0,     100),
+  (1,     100),
+  (15,    100),
+  (16,    120),
+  (17,    120),
+  (31,    120),
+  (32,    140),
+  (100,   228),
+  (500,   760),
+  (1000,  1420),
+  (1024,  1464),
+  (2048,  2828),
+  (5000,  6756),
+  (10000, 13432),
+])
+
+def test_encryptedLength(messageLength, expected):
+  assert encryptedLength(messageLength) == expected
+
+
+# getTotalFrames
+@pytest.mark.parametrize("messageLength, lsbDepth, encrypted, expected", [
+  (8,     1, False, 64),
+  (8,     8, False, 8),
+  (10,    3, False, 27),
+  (1,     8, True,  100),
+  (16,    4, True,  240),
+  (0,     1, False, 0),
+  (0,     1, True,  800),
+  (1000,  1, False, 8000),
+  (1000,  8, False, 1000),
+  (1000,  3, False, 2667),
+  (1024,  8, True,  1464),
+  (5000,  4, True,  13512),
+  (10000, 1, False, 80000),
+  (10000, 7, False, 11429),
+])
+
+def test_getTotalFrames(messageLength, lsbDepth, encrypted, expected):
+  assert getTotalFrames(messageLength, lsbDepth, encrypted=encrypted) == expected
+
+# modifyFrame (single bit)
 @pytest.mark.parametrize("frameValue, display, expected", [
   (0b01100001, False, 0b01100001),
   (0b01100000, False, 0b01100001)
@@ -38,7 +90,7 @@ def test_bitsToText(bits, display, expected):
 def test_modifyFrame(frameValue, display, expected):
   assert modifyFrame(frameValue, display) == expected
 
-# extractFromFrame
+# extractFromFrame (single bit)
 @pytest.mark.parametrize("frameValue, display, expected", [
   (0b01100001, False, '1'),
   (0b01100000, False, '0')
@@ -47,7 +99,7 @@ def test_modifyFrame(frameValue, display, expected):
 def test_extractFromFrame(frameValue, display, expected):
   assert extractFromFrame(frameValue, display) == expected
 
-# extractFromFrame
+# extract LSBs
 @pytest.mark.parametrize("frameValue, depth, display, expected", [
   (0b01100101, 1, False, '1'),
   (0b01100101, 2, False, '01'),
