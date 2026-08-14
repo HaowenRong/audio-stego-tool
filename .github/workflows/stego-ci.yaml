@@ -18,7 +18,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-        
+          cache: 'pip'
+
       - name: Install dependencies
         run: pip install -r requirements.txt
 
@@ -38,6 +39,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
 
       - name: Install dependencies
         run: pip install -r requirements.txt
@@ -46,18 +48,5 @@ jobs:
         run: chmod +x tests/*.sh
 
       # tests
-      - name: Basic tests
-        run: ./tests/test-basic.sh
-
-      - name: High capacity tests
-        run: ./tests/test-high-capacity.sh
-
-      - name: Late offset tests
-        run: ./tests/test-late-offset.sh
-
-      - name: Low detectability tests
-        run: ./tests/test-low-detectability.sh
-
-      - name: Mono channel tests
-        run: ./tests/test-mono-channel.sh
-
+      - name: Run all use-case tests
+        run: ./tests/all-tests.sh
