@@ -4,3 +4,4 @@ mutagen==1.47.0
 numpy==2.4.4
 soundfile==0.13.1
 pytest==9.0.3
+cryptography==49.0.0
