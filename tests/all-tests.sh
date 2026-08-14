@@ -6,7 +6,7 @@ cd "$(dirname "$0")"
 dir="../audio-files/"
 textFile="stego-texts/stego.txt"
 
-messageLength=$(printf '%s' "$(cat "${dir}${textFile}")" | wc -c | tr -d '[:space:]')
+messageLength=$(( $(printf '%s' "$(cat "${dir}${textFile}")" | wc -c | tr -d '[:space:]') + 1 ))
 
 encryptionKey="hHP9G_X4wT_WL4I1M5YOyH7g8pFnA-LwjA_2z0jsu_w="
 
